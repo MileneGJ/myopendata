@@ -1,0 +1,56 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Users {
+  id Int @id @default(autoincrement())
+  name String
+  email String @unique
+  password String
+  files Files[]
+  users1 Friends[] @relation("users1")
+  users2 Friends[] @relation("users2")
+  createdAt DateTime
+}
+
+model Files {
+  id Int @id @default(autoincrement())
+  title String
+  description String
+  csvlink String @unique
+  users Users @relation(fields: [userId], references: [id])
+  userId Int
+  filesKeywords FilesKeywords[]
+  createdAt DateTime
+}
+
+model Keywords {
+  id Int @id @default(autoincrement())
+  name String @unique
+  filesKeywords FilesKeywords[]
+  createdAt DateTime
+}
+
+model FilesKeywords {
+  id Int @id @default(autoincrement())
+  files Files @relation(fields: [fileId],references: [id])
+  keywords Keywords @relation(fields: [keywordId],references: [id])
+  fileId Int @unique
+  keywordId Int
+}
+
+model Friends {
+  id Int @id @default(autoincrement())
+  users1 Users @relation("users1",fields: [user1Id],references: [id])
+  users2 Users @relation("users2",fields: [user2Id],references: [id])
+  user1Id Int @unique
+  user2Id Int
+}
