@@ -2,6 +2,8 @@ import userFactory from '../factories/userFactory';
 import * as userService from '../../src/services/authServices'
 import * as userRepository from '../../src/repositories/userRepository'
 import invalidUserFactory from '../factories/invalidUserFactory';
+import bcrypt from 'bcrypt'
+import jwt from 'jsonwebtoken'
 
 beforeEach(()=>{
     jest.resetAllMocks();
@@ -12,8 +14,12 @@ describe('Testing create function',()=>{
 
 
     it('Returns created user when email and password are valid',async()=>{
+        //for all the it's
+        jest.spyOn(bcrypt, 'genSalt').mockImplementation(() => 'SALT')
+        jest.spyOn(bcrypt, 'hash').mockImplementation(() => 'HASHED_PASSWORD')
+
         const user = await userFactory()
-        const createdUser = {...user,id:1,createdAt:new Date}
+        const createdUser = {...user,id:1,createdAt:new Date, password:'HASHED_PASSWORD'}
         jest.spyOn(userRepository, 'insert').mockImplementationOnce(():any=>createdUser)
         jest.spyOn(userRepository, 'findByEmail').mockImplementationOnce(():any=>{null})
 
@@ -48,5 +54,47 @@ describe('Testing create function',()=>{
         await expect(result).rejects.toEqual(expectedError)
         expect(userRepository.findByEmail).not.toBeCalled()
         expect(userRepository.insert).not.toBeCalled()
+    })
+})
+
+describe('Testing authenticate function', ()=>{
+
+    it('Returns token when email and password are correct',async()=>{
+        //for all it's
+        const token = 'USER_SPECIFIC_TOKEN'
+        jest.spyOn(jwt,'sign').mockImplementation(()=>token)
+
+        const user = await userFactory()
+        jest.spyOn(bcrypt,'compare').mockImplementationOnce(()=>true)
+        jest.spyOn(userRepository,'findByEmail').mockImplementationOnce(():any=>user)
+
+        const result = userService.authenticate({email:user.email,password:user.password})
+
+        await expect(result).resolves.toEqual(token)
+        expect(jwt.sign).toBeCalled()
+    })
+
+    it('Returns 401 when user is not found',async()=>{
+        const user = await userFactory()
+        const expectedError = { type: 'unauthorized', message: 'Incorrect email or password' }
+        jest.spyOn(bcrypt,'compare').mockImplementationOnce(()=>false)
+        jest.spyOn(userRepository,'findByEmail').mockImplementationOnce(():any=>{})
+
+        const result = userService.authenticate({email:user.email,password:user.password})
+
+        await expect(result).rejects.toEqual(expectedError)
+        expect(jwt.sign).not.toBeCalled()
+    })
+
+    it('Returns 401 when password is incorrect',async()=>{
+        const user = await userFactory()
+        const expectedError = { type: 'unauthorized', message: 'Incorrect email or password' }
+        jest.spyOn(bcrypt,'compare').mockImplementationOnce(()=>false)
+        jest.spyOn(userRepository,'findByEmail').mockImplementationOnce(():any=>user)
+
+        const result = userService.authenticate({email:user.email,password:user.password+'x'})
+
+        await expect(result).rejects.toEqual(expectedError)
+        expect(jwt.sign).not.toBeCalled()
     })
 })

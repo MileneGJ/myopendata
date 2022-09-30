@@ -6,7 +6,6 @@ import jwt from 'jsonwebtoken';
 
 export async function create(user:IUserBody) {
     const password = await validatePassword(user.password)
-    console.log(password)
     await verifyEmailInUse(user.email)
     const createdUser = await userRepository.insert({name:user.name,email:user.email,password})
     return createdUser
@@ -21,7 +20,6 @@ async function verifyEmailInUse (email:string) {
 
 async function validatePassword(password:string) {
     const regex = /^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])[A-Za-z0-9]{8,}$/
-    console.log(regex.test(password))
     if(!regex.test(password)){
         throw wrongSchemaError('Password must include numbers and letters in lower and upper case');
     }
@@ -35,7 +33,7 @@ export async function authenticate (user:TUserLogin) {
 
 async function verifyAuthentication (user:TUserLogin) {
     const foundUser = await userRepository.findByEmail(user.email)
-    const encPassword = foundUser?.password
+    const encPassword = foundUser?.password || ''
     const matchPassword = await bcrypt.compare(user.password,encPassword as string)
     if(!matchPassword||!foundUser){
         throw unauthorizedError('Incorrect email or password')
