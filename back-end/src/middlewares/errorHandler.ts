@@ -1,12 +1,12 @@
-import { NextFunction, Request, Response } from "express";
-import { IAppError } from "../types/generalTypes.js";
+import { Request, Response, NextFunction } from "express";
+import { IAppError } from "../types/generalTypes";
 import {
   errorTypeToStatusCode,
   isAppError,
-} from "../utils/errorUtils.js";
+} from "../utils/errorUtils";
 
 export function errorHandler(
-  err: Error | IAppError,
+  err: IAppError,
   req: Request,
   res: Response,
   next: NextFunction
