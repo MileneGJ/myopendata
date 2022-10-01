@@ -24,8 +24,8 @@ describe('Testing POST/signup',()=>{
         const foundUser = await prisma.users.findFirst({where:{email:user.email}}) as IUserDB
 
         expect(result.status).toBe(201)
-        expect(result.body.id).toEqual(foundUser.id)
         expect(foundUser).not.toBeFalsy()
+        expect(result.body.id).toEqual(foundUser.id)
     })
 
     it('Returns 409 when email already exists in database',async()=>{

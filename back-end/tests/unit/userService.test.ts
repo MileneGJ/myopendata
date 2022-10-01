@@ -4,6 +4,7 @@ import * as userRepository from '../../src/repositories/userRepository'
 import invalidUserFactory from '../factories/invalidUserFactory';
 import bcrypt from 'bcrypt'
 import jwt from 'jsonwebtoken'
+import idFactory from '../factories/idFactory';
 
 beforeEach(()=>{
     jest.resetAllMocks();
@@ -17,10 +18,10 @@ describe('Testing create function',()=>{
         //for all the it's
         jest.spyOn(bcrypt, 'genSalt').mockImplementation(() => 'SALT')
         jest.spyOn(bcrypt, 'hash').mockImplementation(() => 'HASHED_PASSWORD')
+        jest.spyOn(userRepository, 'insert').mockImplementation(():any=>createdUser)
 
         const user = await userFactory()
         const createdUser = {...user,id:1,createdAt:new Date, password:'HASHED_PASSWORD'}
-        jest.spyOn(userRepository, 'insert').mockImplementationOnce(():any=>createdUser)
         jest.spyOn(userRepository, 'findByEmail').mockImplementationOnce(():any=>{null})
 
         const result = userService.create(user)
@@ -32,8 +33,10 @@ describe('Testing create function',()=>{
 
     it('Returns status 409 when email already exists in database',async()=>{
         const user = await userFactory()
-        const expectedError = { type: 'conflict', message: "Email already in use" }
-        jest.spyOn(userRepository, 'insert').mockImplementationOnce(():any=>{null})
+        const expectedError = { 
+            type: 'conflict', 
+            message: "Email already in use" }
+
         jest.spyOn(userRepository, 'findByEmail').mockImplementationOnce(():any=>({...user,id:1,createdAt:new Date}))
 
         const result = userService.create(user)
@@ -45,8 +48,10 @@ describe('Testing create function',()=>{
 
     it('Returns status 422 when password is not valid',async()=>{
         const user = await invalidUserFactory()
-        const expectedError = { type: 'wrong_schema', message: "Password must include numbers and letters in lower and upper case" }
-        jest.spyOn(userRepository, 'insert').mockImplementationOnce(():any=>{null})
+        const expectedError = { 
+            type: 'wrong_schema', 
+            message: "Password must include numbers and letters in lower and upper case" }
+
         jest.spyOn(userRepository, 'findByEmail').mockImplementationOnce(():any=>{null})
 
         const result = userService.create(user)
@@ -96,5 +101,34 @@ describe('Testing authenticate function', ()=>{
 
         await expect(result).rejects.toEqual(expectedError)
         expect(jwt.sign).not.toBeCalled()
+    })
+})
+
+describe('Testing verifyUserExists function',()=>{
+
+    it('Returns found user if user is found',async()=>{
+        const id = await idFactory()
+        const user = await userFactory()
+        const foundUser = {
+            id,
+            name:user.name,
+            email:user.email,
+            password:user.password
+        }
+        jest.spyOn(userRepository,'findById').mockImplementationOnce(():any=>foundUser)
+
+        const result = userService.verifyIdExists(id)
+
+        await expect(result).resolves.toEqual(foundUser)
+    })
+
+    it('Returns 404 if user is not found',async()=>{
+        const id = await idFactory()
+        const expectedError = {type:'not_found', message: 'No users were found with this id'}
+        jest.spyOn(userRepository,'findById').mockImplementationOnce(():any=>{})
+
+        const result = userService.verifyIdExists(id)
+
+        await expect(result).rejects.toEqual(expectedError)
     })
 })

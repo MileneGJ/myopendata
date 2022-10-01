@@ -7,8 +7,7 @@ import jwt from 'jsonwebtoken';
 export async function create(user:IUserBody) {
     const password = await validatePassword(user.password)
     await verifyEmailInUse(user.email)
-    const createdUser = await userRepository.insert({name:user.name,email:user.email,password})
-    return createdUser
+    return await userRepository.insert({name:user.name,email:user.email,password})
 }
 
 async function verifyEmailInUse (email:string) {
@@ -41,15 +40,7 @@ async function verifyAuthentication (user:TUserLogin) {
     return foundUser
 }
 
-async function verifyEmailExists (email:string):Promise<IUserDB> {
-    const foundUser = await userRepository.findByEmail(email)
-    if(!foundUser){
-        throw notFoundError('No users were found with this email')
-    }
-    return foundUser
-}
-
-async function verifyIdExists (id:number):Promise<IUserDB> {
+export async function verifyIdExists (id:number):Promise<IUserDB> {
     const foundUser = await userRepository.findById(id)
     if(!foundUser){
         throw notFoundError('No users were found with this id')
@@ -57,12 +48,12 @@ async function verifyIdExists (id:number):Promise<IUserDB> {
     return foundUser
 }
 
-async function encryptPassword(password:string){
+export async function encryptPassword(password:string){
     const salt = await bcrypt.genSalt(Number(process.env.BCRYPT_SALT))
     return await bcrypt.hash(password,salt)
 }
 
-function generateToken(payload:number) {
+export function generateToken(payload:number) {
     const SECRET = process.env.JWT_SECRET || "secret"
     const token = jwt.sign({payload},SECRET,{
         expiresIn:'12h'
