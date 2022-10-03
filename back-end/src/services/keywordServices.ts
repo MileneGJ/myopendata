@@ -14,11 +14,6 @@ export async function validateKeywordArray(keywords: string[]) {
     if (keywords.length === 0) {
         throw wrongSchemaError('At least one keyword must be added to the file')
     }
-    for (const k of keywords) {
-        if (k.length === 0) {
-            throw wrongSchemaError('Empty keywords are not allowed')
-        }
-    }
 }
 
 export async function verifyKeywordsInDB(keywords: string[]) {

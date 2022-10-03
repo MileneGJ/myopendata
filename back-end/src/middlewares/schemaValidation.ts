@@ -7,7 +7,7 @@ export default function schemaValidation (schema:AnySchema) {
         const {error} = schema.validate(req.body)
         if(error) {
             let message = ''
-            error.details.map(d=>message += d.message + '\n')
+            error.details.map(d=>message += d.message + '; ')
             throw wrongSchemaError(message)
         }
         next()

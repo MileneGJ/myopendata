@@ -1,10 +1,10 @@
 import * as filesRepository from '../repositories/filesRepository'
 import * as userService from '../services/authServices'
 import * as keywordService from '../services/keywordServices'
-import { TFileBody } from '../types/fileTypes';
+import { IFileParams, IFileBody } from '../types/fileTypes';
 import { conflictError } from '../utils/errorUtils';
 
-export async function create (file:TFileBody,userId:number) {
+export async function create (file:IFileBody,userId:number) {
     await userService.verifyIdExists(userId)
     await verifyLinkInUse(file.csvlink)
     await keywordService.validateKeywordArray(file.keywords)
@@ -25,3 +25,20 @@ async function verifyLinkInUse (csvlink:string) {
     }
 }
 
+export async function getFiles({
+    keyword, 
+    title, 
+    user, 
+    userId}: IFileParams) {
+
+    await userService.verifyIdExists(userId)
+    if(keyword){
+        return await filesRepository.findByKeyword(keyword)
+    } else if(title){
+        return await filesRepository.findByTitle(title)
+    } else if(user){
+        return await filesRepository.findByUser(user)
+    } else {
+        return await filesRepository.findAll()
+    }
+}

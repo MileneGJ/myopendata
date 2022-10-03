@@ -7,7 +7,7 @@ export interface IFileDB {
     createdAt: Date;
 }
 
-export interface TFileBody {
+export interface IFileBody {
     title: string;
     description: string;
     csvlink: string;
@@ -15,3 +15,10 @@ export interface TFileBody {
 }
 
 export type TFileInsertDB = Omit<IFileDB,'id' | 'createdAt'>
+
+export interface IFileParams {
+    keyword: string | undefined;
+    title: string | undefined;
+    user: string | undefined;
+    userId:number;
+}

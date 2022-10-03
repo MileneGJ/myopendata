@@ -9,5 +9,6 @@ const filesRouter = Router()
 filesRouter.use(tokenVerification)
 
 filesRouter.post('/files',schemaValidation(newFileSchema),filesController.createNewFile)
+filesRouter.get('/files',filesController.returnFiles)
 
 export default filesRouter

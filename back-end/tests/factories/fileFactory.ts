@@ -7,7 +7,7 @@ export default async function fileFactory () {
     return {
         title: faker.commerce.productName(),
         description: faker.commerce.productDescription(),
-        csvlink: faker.image.imageUrl(),
+        csvlink: faker.internet.url(),
         keywords
     }
 }

@@ -54,8 +54,7 @@ export async function encryptPassword(password:string){
 }
 
 export function generateToken(payload:number) {
-    const SECRET = process.env.JWT_SECRET || "secret"
-    const token = jwt.sign({payload},SECRET,{
+    const token = jwt.sign({payload},process.env.JWT_SECRET as string,{
         expiresIn:'12h'
     })
     return token
