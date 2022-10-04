@@ -90,3 +90,17 @@ export async function createScenarioFourFiles(){
     }
     return { token: generateToken(user.id), keyName, title }
 }
+
+export async function createScenarioTwoUsers () {
+    const friend = await createScenarioSignUpOneUser()
+    const user = await createScenarioSignUpOneUser()
+    return { token: generateToken(user.id), userId:user.id, friendId:friend.id}
+}
+
+export async function createScenarioTwoUsersOneDeleted () {
+    const friend = await createScenarioSignUpOneUser()
+    const user = await createScenarioSignUpOneUser()
+    const token = generateToken(user.id)
+    await prisma.users.delete({where:{id:user.id}})
+    return { token, userId:user.id, friendId:friend.id}
+}
