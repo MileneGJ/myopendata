@@ -20,7 +20,7 @@ export default function SignIn () {
             localStorage.setItem('token',promise.data.token)
             navigate('/home')
         } catch (error) {
-        errorHandler(error.response)
+        errorHandler(error)
         }
     }    
 

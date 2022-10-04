@@ -1,10 +1,11 @@
-export default function errorHandler(error) {
-    switch(error.status) {
+export default function errorHandler({response}) {
+    console.log(response)
+    switch(response.status) {
         case 500:
             alert('Server encountered an error. Please refresh page')
             break
         default:
-            alert(error.message)
+            alert(response.data)
             break
     }
 }

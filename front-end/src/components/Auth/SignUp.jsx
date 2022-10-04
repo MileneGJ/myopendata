@@ -21,7 +21,7 @@ export default function SignUp () {
         await signup(newUser)
         navigate('/')
         } catch (error) {
-            errorHandler(error.response)
+            errorHandler(error)
         }
     }
 
