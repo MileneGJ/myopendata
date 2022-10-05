@@ -5,6 +5,7 @@ import { IFileDB } from "../../src/types/fileTypes";
 import fileFactory from "../factories/fileFactory";
 import {
     createScenarioFourFiles,
+    createScenarioOneFile,
     createScenarioOneUserOneFile,
     createScenarioSignInDeletedUser,
     createScenarioSignInOneUser,
@@ -172,4 +173,28 @@ describe('GET /files',()=>{
         expect(result.status).toBe(401)
         expect(result.body.length).toBeFalsy()
     })
+})
+
+describe('Testing GET /files/:id',()=>{
+
+    it('Returns 200 and requested file when param is valid',async()=>{
+        const {token,file} = await createScenarioOneFile()
+
+        const result = await supertest(app).get(`/files/${file.id}`)
+        .set('Authorization', `Bearer ${token}`)
+
+        expect(result.status).toBe(200)
+        expect(result.body.id).toEqual(file.id)
+    })
+
+    it('Returns 404 when param is not valid',async()=>{
+        const {token,file} = await createScenarioOneFile()
+
+        const result = await supertest(app).get(`/files/${file.id+1}`)
+        .set('Authorization', `Bearer ${token}`)
+
+        expect(result.status).toBe(404)
+        expect(result.body.id).toBeFalsy()
+    })
+
 })

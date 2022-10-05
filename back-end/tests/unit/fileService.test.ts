@@ -130,3 +130,33 @@ describe('Testing getFiles function',()=>{
     })
 
 })
+
+describe('Testing getOneFile function',()=>{
+
+    it('Returns requested file when params are valid',async()=>{
+        const id = await idFactory()
+        const userId = await idFactory()
+        const file = await fileFactory()
+
+        jest.spyOn(userService,'verifyIdExists').mockImplementation(():any=>true)
+
+        jest.spyOn(filesRepository,'findById').mockImplementationOnce(():any=>file)
+
+        const result = fileService.getOneFile(userId,id)
+
+        await expect(result).resolves.toEqual(file)
+    })
+
+    it('Returns 404 when params are not valid',async()=>{
+        const id = await idFactory()
+        const userId = await idFactory()
+        const expectedError = {type: "not_found", message: "No files were found with this id"}
+
+        jest.spyOn(filesRepository,'findById').mockImplementationOnce(():any=>{})
+
+        const result = fileService.getOneFile(userId,id)
+
+        await expect(result).rejects.toEqual(expectedError)
+    })
+
+})

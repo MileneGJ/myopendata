@@ -10,5 +10,6 @@ filesRouter.use(tokenVerification)
 
 filesRouter.post('/files',schemaValidation(newFileSchema),filesController.createNewFile)
 filesRouter.get('/files',filesController.returnFiles)
+filesRouter.get('/files/:id',filesController.returnOneFile)
 
 export default filesRouter

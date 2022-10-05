@@ -68,3 +68,7 @@ export async function findAll() {
         }
     })
 }
+
+export async function findById(id:number) {
+    return await prisma.files.findFirst({where:{id}})
+}

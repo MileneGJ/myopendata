@@ -1,3 +1,5 @@
+import { IFileDB } from "./fileTypes";
+
 export interface IAppError {
   type: TAppErrorTypes;
   message: string;
@@ -9,4 +11,10 @@ export interface IJWTDecoded {
   payload:number;
   iat:number;
   exp:number
+}
+
+export interface IKeywordReturnDB {
+  filesKeywords : {
+    files: IFileDB
+  }[]
 }

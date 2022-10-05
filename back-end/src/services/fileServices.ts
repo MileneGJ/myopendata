@@ -1,8 +1,9 @@
 import * as filesRepository from '../repositories/filesRepository'
 import * as userService from '../services/authServices'
 import * as keywordService from '../services/keywordServices'
-import { IFileParams, IFileBody } from '../types/fileTypes';
-import { conflictError } from '../utils/errorUtils';
+import { IFileParams, IFileBody, IFileDB } from '../types/fileTypes';
+import { IKeywordReturnDB } from '../types/generalTypes';
+import { conflictError, notFoundError } from '../utils/errorUtils';
 
 export async function create (file:IFileBody,userId:number) {
     await userService.verifyIdExists(userId)
@@ -33,7 +34,9 @@ export async function getFiles({
 
     await userService.verifyIdExists(userId)
     if(keyword){
-        return await filesRepository.findByKeyword(keyword)
+        const rawSearch = await filesRepository.findByKeyword(keyword)
+        console.log(rawSearch)
+        return formatKeywordOutput(rawSearch)
     } else if(title){
         return await filesRepository.findByTitle(title)
     } else if(user){
@@ -41,4 +44,25 @@ export async function getFiles({
     } else {
         return await filesRepository.findAll()
     }
+}
+
+export async function getOneFile (userId:number, fileId:number) {
+    await userService.verifyIdExists(userId)
+    return await verifyFileExists(fileId)
+}
+
+async function verifyFileExists(fileId:number){
+    const file = await filesRepository.findById(fileId)
+    if(!file){
+        throw notFoundError('No files were found with this id')
+    }
+    return file
+}
+
+function formatKeywordOutput (fileArray:IKeywordReturnDB[]) {
+    let formattedArray
+    if(fileArray.length) {
+    formattedArray = fileArray.map(k=>k.filesKeywords[0].files)
+    }
+    return formattedArray
 }

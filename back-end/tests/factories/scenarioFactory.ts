@@ -108,3 +108,17 @@ export async function createScenarioTwoUsersOneDeleted () {
     await prisma.users.delete({where:{id:user.id}})
     return { token, userId:user.id, friendId:friend.id}
 }
+
+export async function createScenarioOneFile(){
+    const user = await createScenarioSignUpOneUser()
+    const file = await fileFactory()
+    const createdFile = await prisma.files.create({
+        data: {
+            title: file.title,
+            description: file.description,
+            csvlink: file.csvlink,
+            userId: user.id
+        }
+    })
+    return {token:generateToken(user.id),file:createdFile}
+}

@@ -15,3 +15,10 @@ export async function returnFiles (req:Request, res:Response) {
     const files = await fileService.getFiles({keyword,title,user, userId} as IFileParams)
     res.status(200).send(files)
 }
+
+export async function returnOneFile (req:Request, res:Response) {
+    const {userId} = res.locals
+    const {id} = req.params
+    const file = await fileService.getOneFile(userId,Number(id))
+    res.status(200).send(file)
+}
