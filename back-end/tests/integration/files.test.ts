@@ -123,14 +123,14 @@ describe('Testing POST /files', () => {
 describe('GET /files',()=>{
 
     it('Returns list of files ordered by user when user is provided',async()=>{
-        const {token,name, id} = await createScenarioTwoUsersFourFiles()
+        const {token,name} = await createScenarioTwoUsersFourFiles()
 
         const result = await supertest(app).get(`/files?user=${name}`)
         .set('Authorization', `Bearer ${token}`)
 
         expect(result.status).toBe(200)
         expect(result.body.length).toBeGreaterThan(0)
-        expect(result.body[0].userId).toEqual(id)
+        expect(result.body[0].author).toEqual(name)
     })
 
     it('Returns list of files ordered by keyword when keyword is provided',async()=>{

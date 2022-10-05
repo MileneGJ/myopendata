@@ -79,7 +79,7 @@ describe('Testing getFiles function',()=>{
 
         const result = fileService.getFiles({keyword, title, user, userId})
 
-        expect(result).resolves.toEqual(fileList)
+        await expect(result).resolves.toHaveLength(5)
         expect(filesRepository.findAll).not.toBeCalled()
         expect(filesRepository.findByKeyword).not.toBeCalled()
         expect(filesRepository.findByTitle).not.toBeCalled()
@@ -100,7 +100,7 @@ describe('Testing getFiles function',()=>{
 
         const result = fileService.getFiles({keyword, title, user, userId})
 
-        expect(result).resolves.toEqual(fileList)
+        await expect(result).resolves.toHaveLength(5)
         expect(filesRepository.findAll).not.toBeCalled()
         expect(filesRepository.findByKeyword).not.toBeCalled()
         expect(filesRepository.findByUser).not.toBeCalled()
@@ -120,7 +120,7 @@ describe('Testing getFiles function',()=>{
 
         const result = fileService.getFiles({keyword, title, user, userId})
 
-        expect(result).resolves.toEqual(fileList)
+        await expect(result).resolves.toHaveLength(5)
         expect(filesRepository.findAll).not.toBeCalled()
         expect(filesRepository.findByTitle).not.toBeCalled()
         expect(filesRepository.findByUser).not.toBeCalled()
@@ -138,9 +138,27 @@ describe('Testing getFiles function',()=>{
 
         const result = fileService.getFiles({keyword, title, user, userId})
 
-        expect(result).resolves.toEqual([])
+        await expect(result).resolves.toEqual([])
         expect(filesRepository.findAll).not.toBeCalled()
         expect(filesRepository.findByTitle).not.toBeCalled()
+        expect(filesRepository.findByUser).not.toBeCalled()
+    })
+
+    it('Returns formatted empty array if title is not found in any file',async()=>{
+        const user = undefined
+        const keyword = undefined
+        const title = await wordFactory()
+        const userId = await idFactory()
+        jest.spyOn(filesRepository,'findAll').mockImplementationOnce(():any=>[])
+        jest.spyOn(filesRepository,'findByKeyword').mockImplementationOnce(():any=>[])
+        jest.spyOn(filesRepository,'findByTitle').mockImplementationOnce(():any=>[])
+        jest.spyOn(filesRepository,'findByUser').mockImplementationOnce(():any=>[])
+
+        const result = fileService.getFiles({keyword, title, user, userId})
+
+        await expect(result).resolves.toEqual([])
+        expect(filesRepository.findAll).not.toBeCalled()
+        expect(filesRepository.findByKeyword).not.toBeCalled()
         expect(filesRepository.findByUser).not.toBeCalled()
     })
 
@@ -158,7 +176,7 @@ describe('Testing getFiles function',()=>{
 
         const result = fileService.getFiles({keyword, title, user, userId})
 
-        expect(result).resolves.toEqual(fileList)
+        await expect(result).resolves.toHaveLength(5)
         expect(filesRepository.findByKeyword).not.toBeCalled()
         expect(filesRepository.findByTitle).not.toBeCalled()
         expect(filesRepository.findByUser).not.toBeCalled()
@@ -172,14 +190,15 @@ describe('Testing getOneFile function',()=>{
         const id = await idFactory()
         const userId = await idFactory()
         const file = await fileFactory()
+        const name = await wordFactory()
 
         jest.spyOn(userService,'verifyIdExists').mockImplementation(():any=>true)
 
-        jest.spyOn(filesRepository,'findById').mockImplementationOnce(():any=>file)
+        jest.spyOn(filesRepository,'findById').mockImplementationOnce(():any=>({...file,id,users:{name}}))
 
         const result = fileService.getOneFile(userId,id)
 
-        await expect(result).resolves.toEqual(file)
+        await expect(result).resolves.toHaveProperty('id')
     })
 
     it('Returns 404 when params are not valid',async()=>{

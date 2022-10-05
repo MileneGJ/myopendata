@@ -50,7 +50,14 @@ export async function getFiles({
 
 export async function getOneFile (userId:number, fileId:number) {
     await userService.verifyIdExists(userId)
-    return await verifyFileExists(fileId)
+    const file = await verifyFileExists(fileId)
+    return ({
+        id:file.id,
+        title:file.title,
+        description:file.description,
+        csvlink:file.csvlink,
+        author:file.users.name
+    })
 }
 
 async function verifyFileExists(fileId:number){

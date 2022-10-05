@@ -10,7 +10,9 @@ export default async function fileListFactory (length:number) {
             title:file.title,
             description:file.description,
             csvlink:file.csvlink,
-            userId:1
+            users:{
+                name:faker.name.firstName()
+            }
         })
     }
     return fileList

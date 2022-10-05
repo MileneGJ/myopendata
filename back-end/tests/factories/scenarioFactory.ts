@@ -69,7 +69,7 @@ export async function createScenarioTwoUsersFourFiles() {
 
         }
     }
-    return { token: generateToken(id), name, id }
+    return { token: generateToken(id), name }
 }
 
 export async function createScenarioFourFiles(){
