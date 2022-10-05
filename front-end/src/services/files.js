@@ -8,7 +8,7 @@ export async function listAll(token) {
 
 export async function create(token,data) {
   const config = createConfig(token)
-  const response = await api.post("/files", config, data);
+  const response = await api.post("/files", data, config);
   return response.data;
 }
 

@@ -31,7 +31,7 @@ display:flex;
 flex-direction:column;
 align-items:center;
 width:400px;
-input {
+input, textarea {
   font-family: 'Lexend', sans-serif;
   width:100%;
   box-sizing:border-box;
@@ -42,6 +42,9 @@ input {
   border:1px solid #021a67;
   border-radius:10px;
   color:#58728a;
+}
+textarea{
+    height:auto;
 }
 button {
     background-color: #021a67;

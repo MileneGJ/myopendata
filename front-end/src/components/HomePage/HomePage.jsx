@@ -3,7 +3,7 @@ import { listAll } from "../../services/files";
 import errorHandler from "../../utils/errorHandler";
 import Header from "../Layout/Header";
 import File from "./File";
-import { Container, ListContainer, UploadButton } from "./HomepageStyles";
+import { Container, InnerContent, UploadButton } from "./HomepageStyles";
 import { Link, useNavigate } from 'react-router-dom'
 
 
@@ -32,7 +32,7 @@ export default function HomePage() {
     return (
         <Container>
             <Header />
-            <ListContainer>
+            <InnerContent>
                 {
                     fileList ?
                         fileList.length > 0 ?
@@ -52,12 +52,12 @@ export default function HomePage() {
                             :
                             <>
                                 <h2>There are no files to be shown</h2>
-                                <Link><h2>Upload a new one!</h2></Link>
+                                <Link to='/new-file'><h2>Upload a new one!</h2></Link>
                             </>
                         :
                         <h2>Loading...</h2>
                 }
-            </ListContainer>
+            </InnerContent>
         </Container>
     )
 }

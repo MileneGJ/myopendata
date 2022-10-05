@@ -7,13 +7,14 @@ export default function File ({id, title, description, username}) {
                 <img src="" alt="" />
                 <div>
                     <h2>{title}</h2>
-                    <p>{description}</p>
+                    <p>{description.slice(0,60)+'...'}</p>
                 </div>
             </div>
             <div>
                 <h2>
-                    {username}
+                    Author:
                 </h2>
+                <p>{username}</p>
             </div>
         </FileSpan>
     )

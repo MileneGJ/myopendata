@@ -6,6 +6,10 @@ import wordFactory from "./wordFactory";
 
 export async function deleteAllData() {
     await prisma.$executeRaw`TRUNCATE TABLE "Users" RESTART IDENTITY CASCADE;`
+    await prisma.$executeRaw`TRUNCATE TABLE "Files" RESTART IDENTITY CASCADE;`
+    await prisma.$executeRaw`TRUNCATE TABLE "Keywords" RESTART IDENTITY CASCADE;`
+    await prisma.$executeRaw`TRUNCATE TABLE "FilesKeywords" RESTART IDENTITY CASCADE;`
+    await prisma.$executeRaw`TRUNCATE TABLE "Friends" RESTART IDENTITY CASCADE;`
 }
 
 export async function disconnectPrisma() {
