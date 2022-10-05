@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { create } from "../../services/files";
 import errorHandler from "../../utils/errorHandler";
 import { Form } from "../Auth/AuthStyles";
@@ -6,6 +7,7 @@ import { Container, InnerContent } from "../HomePage/HomepageStyles";
 import Header from "../Layout/Header";
 
 export default function CreateFilePage () {
+    const navigate = useNavigate()
     const [newFile,setNewFile] = useState({
         title:'',
         csvlink:'',
@@ -13,6 +15,13 @@ export default function CreateFilePage () {
         keywords:''
     })
     const token = localStorage.getItem('token')
+
+    useEffect(()=>{
+        if (!token) {
+            alert('User not logged in')
+            navigate('/')
+        }
+    },[token])
 
     async function createFile (e) {
         e.preventDefault()

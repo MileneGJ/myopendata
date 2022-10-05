@@ -27,8 +27,8 @@ export default function SignUp () {
 
     return (
         <AuthContainer>
-            <img src={logo} alt ='' />
-            <h1>Easily find and store data online</h1>
+            <img src={logo} alt =''  />
+            <h1 style={{'marginBottom':'70px'}} >Easily find and store data online</h1>
             <Form onSubmit={createUser}>
                 <input 
                 type='text' 

@@ -17,26 +17,27 @@ export default function HomePage() {
         if (!token) {
             alert('User not logged in')
             navigate('/')
-        }
-        async function returnList() {
-            try {
-                if(search.length>0){
-                    const searchString = search.replace('?','').split('=')
-                    const field = searchString[0]
-                    const content = searchString[1]
-                    const response = await listByField(token,{field,content})
-                    setFileList(response)
-                } else {
-                    const response = await listAll(token)
-                    setFileList(response)
+        } else {
+            async function returnList() {
+                try {
+                    if (search.length > 0) {
+                        const searchString = search.replace('?', '').split('=')
+                        const field = searchString[0]
+                        const content = searchString[1]
+                        const response = await listByField(token, { field, content })
+                        setFileList(response)
+                    } else {
+                        const response = await listAll(token)
+                        setFileList(response)
+                    }
+                } catch (error) {
+                    errorHandler(error)
                 }
-            } catch (error) {
-                errorHandler(error)
             }
+            returnList()
         }
-        returnList()
 
-    }, [search])
+    }, [search, token])
 
     return (
         <Container>
