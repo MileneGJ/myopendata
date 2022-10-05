@@ -15,3 +15,13 @@ async function verifyFriendLink (friendId:number, userId:number) {
         throw conflictError('This user was already added as a friend')
     }
 }
+
+export async function getUserNameById (ParamUserId:number,TokenUserId:number) {
+    if(ParamUserId){
+        const user = await userService.verifyIdExists(ParamUserId)
+        return user.name
+    } else {
+        const user = await userService.verifyIdExists(TokenUserId)
+        return user.name
+    }
+}

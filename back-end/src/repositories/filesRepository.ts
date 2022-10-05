@@ -1,15 +1,17 @@
 import prisma from "../database/database";
-import { TFileInsertDB } from "../types/fileTypes";
+import { IFileDB, TFileInsertDB } from "../types/fileTypes";
+import { IKeywordReturnDB } from "../types/keywordTypes";
 
 export async function insert(file: TFileInsertDB) {
     return await prisma.files.create({ data: file })
 }
 
-export async function findByLink(csvlink: string) {
-    return await prisma.files.findFirst({ where: { csvlink } })
+export async function findByLink(csvlink: string):Promise<IFileDB> {
+    const files = await prisma.files.findFirst({ where: { csvlink } })
+    return files as IFileDB
 }
 
-export async function findByUser(user: string) {
+export async function findByUser(user: string):Promise<IFileDB[]> {
     return await prisma.files.findMany({
         where: {
             users: {
@@ -28,7 +30,7 @@ export async function findByUser(user: string) {
     })
 }
 
-export async function findByKeyword(keyword: string) {
+export async function findByKeyword(keyword: string):Promise<IKeywordReturnDB[]>  {
     return await prisma.keywords.findMany({
         where: {
             name: {
@@ -48,7 +50,7 @@ export async function findByKeyword(keyword: string) {
     })
 }
 
-export async function findByTitle(title: string) {
+export async function findByTitle(title: string):Promise<IFileDB[]>  {
     return await prisma.files.findMany({
         where: {
             title: {
@@ -61,7 +63,7 @@ export async function findByTitle(title: string) {
     })
 }
 
-export async function findAll() {
+export async function findAll():Promise<IFileDB[]>  {
     return await prisma.files.findMany({
         orderBy:{
             createdAt: 'desc'
@@ -69,6 +71,7 @@ export async function findAll() {
     })
 }
 
-export async function findById(id:number) {
-    return await prisma.files.findFirst({where:{id}})
+export async function findById(id:number):Promise<IFileDB>  {
+    const file = await prisma.files.findFirst({where:{id}})
+    return file as IFileDB
 }

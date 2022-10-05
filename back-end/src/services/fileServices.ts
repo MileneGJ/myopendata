@@ -2,7 +2,7 @@ import * as filesRepository from '../repositories/filesRepository'
 import * as userService from '../services/authServices'
 import * as keywordService from '../services/keywordServices'
 import { IFileParams, IFileBody, IFileDB } from '../types/fileTypes';
-import { IKeywordReturnDB } from '../types/generalTypes';
+import { IKeywordReturnDB } from '../types/keywordTypes';
 import { conflictError, notFoundError } from '../utils/errorUtils';
 
 export async function create (file:IFileBody,userId:number) {
@@ -34,9 +34,8 @@ export async function getFiles({
 
     await userService.verifyIdExists(userId)
     if(keyword){
-        const rawSearch = await filesRepository.findByKeyword(keyword)
-        console.log(rawSearch)
-        return formatKeywordOutput(rawSearch)
+        const rawSearch = await filesRepository.findByKeyword(keyword as string)
+        return formatKeywordOutput(rawSearch as IKeywordReturnDB[])
     } else if(title){
         return await filesRepository.findByTitle(title)
     } else if(user){
@@ -60,9 +59,8 @@ async function verifyFileExists(fileId:number){
 }
 
 function formatKeywordOutput (fileArray:IKeywordReturnDB[]) {
-    let formattedArray
     if(fileArray.length) {
-    formattedArray = fileArray.map(k=>k.filesKeywords[0].files)
+    return fileArray.map(k=>k.filesKeywords[0].files)
     }
-    return formattedArray
+    return []
 }

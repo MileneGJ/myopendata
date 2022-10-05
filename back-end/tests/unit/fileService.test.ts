@@ -67,66 +67,101 @@ describe('Testing getFiles function',()=>{
 
     it('Returns files ordered by user if user is provided',async()=>{
         const fileList = await fileListFactory(5)
+        const keywordsFileList = fileList.map(f=>({filesKeywords:[{files:f}]}))
         const user = await wordFactory()
         const keyword = undefined
         const title = undefined
         const userId = await idFactory()
-        jest.spyOn(filesRepository,'findAll').mockImplementation(():any=>fileList)
-        jest.spyOn(filesRepository,'findByKeyword').mockImplementation(():any=>fileList)
-        jest.spyOn(filesRepository,'findByTitle').mockImplementation(():any=>fileList)
-        jest.spyOn(filesRepository,'findByUser').mockImplementation(():any=>fileList)
+        jest.spyOn(filesRepository,'findAll').mockImplementationOnce(():any=>fileList)
+        jest.spyOn(filesRepository,'findByKeyword').mockImplementationOnce(():any=>keywordsFileList)
+        jest.spyOn(filesRepository,'findByTitle').mockImplementationOnce(():any=>fileList)
+        jest.spyOn(filesRepository,'findByUser').mockImplementationOnce(():any=>fileList)
 
         const result = fileService.getFiles({keyword, title, user, userId})
 
         expect(result).resolves.toEqual(fileList)
+        expect(filesRepository.findAll).not.toBeCalled()
+        expect(filesRepository.findByKeyword).not.toBeCalled()
+        expect(filesRepository.findByTitle).not.toBeCalled()
+
     })
 
     it('Returns files ordered by title if title is provided',async()=>{
         const fileList = await fileListFactory(5)
+        const keywordsFileList = fileList.map(f=>({filesKeywords:[{files:f}]}))
         const user = undefined
         const keyword = undefined
         const title = await wordFactory()
         const userId = await idFactory()
-        jest.spyOn(filesRepository,'findAll').mockImplementation(():any=>fileList)
-        jest.spyOn(filesRepository,'findByKeyword').mockImplementation(():any=>fileList)
-        jest.spyOn(filesRepository,'findByTitle').mockImplementation(():any=>fileList)
-        jest.spyOn(filesRepository,'findByUser').mockImplementation(():any=>fileList)
+        jest.spyOn(filesRepository,'findAll').mockImplementationOnce(():any=>fileList)
+        jest.spyOn(filesRepository,'findByKeyword').mockImplementationOnce(():any=>keywordsFileList)
+        jest.spyOn(filesRepository,'findByTitle').mockImplementationOnce(():any=>fileList)
+        jest.spyOn(filesRepository,'findByUser').mockImplementationOnce(():any=>fileList)
 
         const result = fileService.getFiles({keyword, title, user, userId})
 
         expect(result).resolves.toEqual(fileList)
+        expect(filesRepository.findAll).not.toBeCalled()
+        expect(filesRepository.findByKeyword).not.toBeCalled()
+        expect(filesRepository.findByUser).not.toBeCalled()
     })
 
     it('Returns files ordered by keyword if keyword is provided',async()=>{
         const fileList = await fileListFactory(5)
+        const keywordsFileList = fileList.map(f=>({filesKeywords:[{files:f}]}))
         const user = undefined
         const keyword = await wordFactory()
         const title = undefined
         const userId = await idFactory()
-        jest.spyOn(filesRepository,'findAll').mockImplementation(():any=>fileList)
-        jest.spyOn(filesRepository,'findByKeyword').mockImplementation(():any=>fileList)
-        jest.spyOn(filesRepository,'findByTitle').mockImplementation(():any=>fileList)
-        jest.spyOn(filesRepository,'findByUser').mockImplementation(():any=>fileList)
+        jest.spyOn(filesRepository,'findAll').mockImplementationOnce(():any=>fileList)
+        jest.spyOn(filesRepository,'findByKeyword').mockImplementationOnce(():any=>keywordsFileList)
+        jest.spyOn(filesRepository,'findByTitle').mockImplementationOnce(():any=>fileList)
+        jest.spyOn(filesRepository,'findByUser').mockImplementationOnce(():any=>fileList)
 
         const result = fileService.getFiles({keyword, title, user, userId})
 
         expect(result).resolves.toEqual(fileList)
+        expect(filesRepository.findAll).not.toBeCalled()
+        expect(filesRepository.findByTitle).not.toBeCalled()
+        expect(filesRepository.findByUser).not.toBeCalled()
+    })
+
+    it('Returns formatted empty array if keyword is not found in any file',async()=>{
+        const user = undefined
+        const keyword = await wordFactory()
+        const title = undefined
+        const userId = await idFactory()
+        jest.spyOn(filesRepository,'findAll').mockImplementationOnce(():any=>[])
+        jest.spyOn(filesRepository,'findByKeyword').mockImplementationOnce(():any=>[])
+        jest.spyOn(filesRepository,'findByTitle').mockImplementationOnce(():any=>[])
+        jest.spyOn(filesRepository,'findByUser').mockImplementationOnce(():any=>[])
+
+        const result = fileService.getFiles({keyword, title, user, userId})
+
+        expect(result).resolves.toEqual([])
+        expect(filesRepository.findAll).not.toBeCalled()
+        expect(filesRepository.findByTitle).not.toBeCalled()
+        expect(filesRepository.findByUser).not.toBeCalled()
     })
 
     it('Returns all files if no search queries are provided',async()=>{
         const fileList = await fileListFactory(5)
+        const keywordsFileList = fileList.map(f=>({filesKeywords:[{files:f}]}))
         const user = undefined
         const keyword = undefined
         const title = undefined
         const userId = await idFactory()
-        jest.spyOn(filesRepository,'findAll').mockImplementation(():any=>fileList)
-        jest.spyOn(filesRepository,'findByKeyword').mockImplementation(():any=>fileList)
-        jest.spyOn(filesRepository,'findByTitle').mockImplementation(():any=>fileList)
-        jest.spyOn(filesRepository,'findByUser').mockImplementation(():any=>fileList)
+        jest.spyOn(filesRepository,'findAll').mockImplementationOnce(():any=>fileList)
+        jest.spyOn(filesRepository,'findByKeyword').mockImplementationOnce(():any=>keywordsFileList)
+        jest.spyOn(filesRepository,'findByTitle').mockImplementationOnce(():any=>fileList)
+        jest.spyOn(filesRepository,'findByUser').mockImplementationOnce(():any=>fileList)
 
         const result = fileService.getFiles({keyword, title, user, userId})
 
         expect(result).resolves.toEqual(fileList)
+        expect(filesRepository.findByKeyword).not.toBeCalled()
+        expect(filesRepository.findByTitle).not.toBeCalled()
+        expect(filesRepository.findByUser).not.toBeCalled()
     })
 
 })

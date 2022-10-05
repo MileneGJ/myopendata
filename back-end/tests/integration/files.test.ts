@@ -197,4 +197,14 @@ describe('Testing GET /files/:id',()=>{
         expect(result.body.id).toBeFalsy()
     })
 
+    it('Returns 401 when token is not valid',async()=>{
+        const {token,file} = await createScenarioOneFile()
+
+        const result = await supertest(app).get(`/files/${file.id+1}`)
+        .set('Authorization', `Bearer ${token+'x'}`)
+
+        expect(result.status).toBe(401)
+        expect(result.body.id).toBeFalsy()
+    })
+
 })
