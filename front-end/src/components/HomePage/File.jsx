@@ -1,7 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import { FileSpan } from "./FileStyles";
 
-export default function File ({id, title, description, username}) {
+export default function File ({id, title, description, author}) {
     const navigate = useNavigate()
 
     return (
@@ -17,7 +17,7 @@ export default function File ({id, title, description, username}) {
                 <h2>
                     Author:
                 </h2>
-                <p>{username}</p>
+                <p>{author}</p>
             </div>
         </FileSpan>
     )

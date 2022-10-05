@@ -3,7 +3,7 @@ import errorHandler from "../../utils/errorHandler";
 import { HeaderSpan, UserOptions } from './HeaderStyles'
 import { Link, useNavigate } from 'react-router-dom'
 import { useEffect, useState } from 'react'
-import { getUserName } from '../../services/friends'
+import { deleteUser, getUserName } from '../../services/users'
 
 export default function Header() {
     const navigate = useNavigate()
@@ -42,6 +42,16 @@ export default function Header() {
         navigate('/')
     }
 
+    async function deleteAccount(){
+        try {
+            await deleteUser(token)
+            alert('User was successfully deleted')
+            navigate('/')
+        } catch (error) {
+            errorHandler(error)
+        }
+    }
+
     function showOptions() {
         setAppearOptions(!appearOptions)
     }
@@ -72,7 +82,7 @@ export default function Header() {
                 <UserOptions visible={appearOptions}>
                     <Link to={`/search?user=${userName}`}>My files</Link>
                     <p onClick={deleteSession}>Logout</p>
-                    <p>Delete account</p>
+                    <p onClick={deleteAccount}>Delete account</p>
                 </UserOptions>
             </div>
         </HeaderSpan>

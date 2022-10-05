@@ -12,3 +12,8 @@ export async function getUserName(token){
     const response = await api.get(`/user`,config);
     return response.data;
 }
+
+export async function deleteUser(token){
+  const config = createConfig(token)
+  await api.delete(`/user`,config);
+}

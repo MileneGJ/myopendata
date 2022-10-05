@@ -38,7 +38,7 @@ export default function FilePage() {
                         <p>{"Get data on: "}
                             <a href={file.csvlink}>{file.csvlink}</a>
                         </p>
-                        <p>{`Author: ${file.userId}`}</p>
+                        <p style={{fontWeight:'700'}}>{`Author: ${file.author}`}</p>
                     </>
                     :
                     <h2>Loading file information...</h2>
