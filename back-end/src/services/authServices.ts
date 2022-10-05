@@ -40,14 +40,6 @@ async function verifyAuthentication (user:TUserLogin) {
     return foundUser
 }
 
-export async function verifyIdExists (id:number):Promise<IUserDB> {
-    const foundUser = await userRepository.findById(id)
-    if(!foundUser){
-        throw notFoundError('No users were found with this id')
-    }
-    return foundUser
-}
-
 export async function encryptPassword(password:string){
     const salt = await bcrypt.genSalt(Number(process.env.BCRYPT_SALT))
     return await bcrypt.hash(password,salt)

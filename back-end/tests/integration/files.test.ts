@@ -25,7 +25,7 @@ afterAll(async () => {
 describe('Testing POST /files', () => {
 
     it('Returns 201 and created file when input is correct', async () => {
-        const token = await createScenarioSignInOneUser()
+        const {token} = await createScenarioSignInOneUser()
         const file = await fileFactory()
 
         const result = await supertest(app).post('/files').set('Authorization', `Bearer ${token}`).send(file)
@@ -38,7 +38,7 @@ describe('Testing POST /files', () => {
     })
 
     it('Returns 401 when authorization header is missing', async () => {
-        const token = await createScenarioSignInOneUser()
+        const {token} = await createScenarioSignInOneUser()
         const file = await fileFactory()
 
         const result = await supertest(app).post('/files').set('Authorization', '').send(file)
@@ -51,7 +51,7 @@ describe('Testing POST /files', () => {
     })
 
     it('Returns 401 when token is invalid', async () => {
-        const token = await createScenarioSignInOneUser()
+        const {token} = await createScenarioSignInOneUser()
         const file = await fileFactory()
 
         const result = await supertest(app).post('/files').set('Authorization', `Bearer ${token + "x"}`).send(file)
@@ -64,7 +64,7 @@ describe('Testing POST /files', () => {
     })
 
     it('Returns 404 when user from token is not found', async () => {
-        const token = await createScenarioSignInDeletedUser()
+        const {token} = await createScenarioSignInDeletedUser()
         const file = await fileFactory()
 
         const result = await supertest(app).post('/files').set('Authorization', `Bearer ${token}`).send(file)
@@ -89,7 +89,7 @@ describe('Testing POST /files', () => {
     })
 
     it('Returns 422 when keyword array is empty', async () => {
-        const token = await createScenarioSignInOneUser()
+        const {token} = await createScenarioSignInOneUser()
         const file = await fileFactory()
 
         const result = await supertest(app).post('/files')
@@ -104,7 +104,7 @@ describe('Testing POST /files', () => {
     })
 
     it('Returns 422 when keyword is an empty string', async () => {
-        const token = await createScenarioSignInOneUser()
+        const {token} = await createScenarioSignInOneUser()
         const file = await fileFactory()
 
         const result = await supertest(app).post('/files')

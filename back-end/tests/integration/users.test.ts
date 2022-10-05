@@ -2,7 +2,14 @@ import supertest from "supertest";
 import app from "../../src/app";
 import prisma from "../../src/database/database";
 import invalidUserFactory from "../factories/invalidUserFactory";
-import { createScenarioSignUpOneUser, deleteAllData, disconnectPrisma } from "../factories/scenarioFactory";
+import { 
+    createScenarioSignInDeletedUser,
+    createScenarioSignInOneUser,
+    createScenarioSignUpOneUser, 
+    createScenarioTwoUsers, 
+    deleteAllData, 
+    disconnectPrisma 
+} from "../factories/scenarioFactory";
 import userFactory from "../factories/userFactory";
 import {IUserDB} from '../../src/types/userTypes'
 
@@ -81,6 +88,102 @@ describe('Testing POST /signin',()=>{
 
         expect(result.status).toBe(401)
         expect(result.body.token).toBeFalsy()
+    })
+
+})
+
+describe('Testing GET /user',()=>{
+
+    it('Returns 200 and user name from id provided by query string',async()=>{
+        const {token, friendId} = await createScenarioTwoUsers()
+
+        const result = await supertest(app).get(`/user?id=${friendId}`)
+        .set('Authorization',`Bearer ${token}`)
+
+        expect(result.status).toBe(200)
+        expect(result.body.name).not.toBeFalsy()
+    })
+
+    it('Returns 200 and user name from token session when no query string is given',async()=>{
+        const {token} = await createScenarioTwoUsers()
+
+        const result = await supertest(app).get(`/user`)
+        .set('Authorization',`Bearer ${token}`)
+
+        expect(result.status).toBe(200)
+        expect(result.body.name).not.toBeFalsy()
+    })
+
+    it('Returns 404 when user id from query string is not found',async()=>{
+        const {token, friendId} = await createScenarioTwoUsers()
+
+        const result = await supertest(app).get(`/user?id=${friendId*(-1)}`)
+        .set('Authorization',`Bearer ${token}`)
+
+        expect(result.status).toBe(404)
+        expect(result.body.name).toBeFalsy()
+    })
+
+    it('Returns 404 when query string is not provided and user id from token session is not found',async()=>{
+        const {token} = await createScenarioSignInDeletedUser()
+
+        const result = await supertest(app).get(`/user`)
+        .set('Authorization',`Bearer ${token}`)
+
+        expect(result.status).toBe(404)
+        expect(result.body.name).toBeFalsy()
+    })
+
+    it('Returns 401 when token is invalid',async()=>{
+        const {token} = await createScenarioTwoUsers()
+
+        const result = await supertest(app).get(`/user`)
+        .set('Authorization',`Bearer ${token+'x'}`)
+
+        expect(result.status).toBe(401)
+        expect(result.body.name).toBeFalsy()
+    })
+
+})
+
+describe('Testing DELETE /user',()=>{
+
+    it('Returns 204 when user id was found and deleted successfully',async()=>{
+        const {token,userId} = await createScenarioSignInOneUser()
+
+        const result = await supertest(app).delete('/user')
+        .set('Authorization',`Bearer ${token}`)
+
+        const foundUser = await prisma.users.findFirst({where:{id:userId}})
+
+        expect(result.status).toBe(204)
+        expect(foundUser?.id).toBeFalsy()
+    })
+
+    it('Returns 404 when user id was not found',async()=>{
+        const {token,userId} = await createScenarioSignInDeletedUser()
+
+        const result = await supertest(app).delete('/user')
+        .set('Authorization',`Bearer ${token}`)
+
+        const foundUser = await prisma.users.findFirst({where:{id:userId}})
+
+        expect(result.status).toBe(404)
+        expect(foundUser?.id).toBeFalsy()
+        
+    })
+
+    it('Returns 401 when token is invalid',async()=>{
+        const {token,userId} = await createScenarioSignInOneUser()
+
+        const result = await supertest(app).delete('/user')
+        .set('Authorization',`Bearer ${token+'x'}`)
+
+        const foundUser = await prisma.users.findFirst({where:{id:userId}})
+
+        expect(result.status).toBe(401)
+        expect(foundUser?.id).not.toBeFalsy()
+        
     })
 
 })

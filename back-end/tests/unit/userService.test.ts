@@ -1,9 +1,6 @@
 import userFactory from '../factories/userFactory';
-import * as userService from '../../src/services/authServices'
+import * as userService from '../../src/services/userServices'
 import * as userRepository from '../../src/repositories/userRepository'
-import invalidUserFactory from '../factories/invalidUserFactory';
-import bcrypt from 'bcrypt'
-import jwt from 'jsonwebtoken'
 import idFactory from '../factories/idFactory';
 
 beforeEach(()=>{
@@ -11,102 +8,9 @@ beforeEach(()=>{
     jest.clearAllMocks();
 });
 
-describe('Testing create function',()=>{
+describe('Testing GetUserNameById function',()=>{
 
-
-    it('Returns created user when email and password are valid',async()=>{
-        //for all the it's
-        jest.spyOn(bcrypt, 'genSalt').mockImplementation(() => 'SALT')
-        jest.spyOn(bcrypt, 'hash').mockImplementation(() => 'HASHED_PASSWORD')
-        jest.spyOn(userRepository, 'insert').mockImplementation(():any=>createdUser)
-
-        const user = await userFactory()
-        const createdUser = {...user,id:1,createdAt:new Date, password:'HASHED_PASSWORD'}
-        jest.spyOn(userRepository, 'findByEmail').mockImplementationOnce(():any=>{null})
-
-        const result = userService.create(user)
-
-        await expect(result).resolves.toEqual(createdUser)
-        expect(userRepository.findByEmail).toBeCalled()
-        expect(userRepository.insert).toBeCalled()
-    })
-
-    it('Returns status 409 when email already exists in database',async()=>{
-        const user = await userFactory()
-        const expectedError = { 
-            type: 'conflict', 
-            message: "Email already in use" }
-
-        jest.spyOn(userRepository, 'findByEmail').mockImplementationOnce(():any=>({...user,id:1,createdAt:new Date}))
-
-        const result = userService.create(user)
-
-        await expect(result).rejects.toEqual(expectedError)
-        expect(userRepository.findByEmail).toBeCalled()
-        expect(userRepository.insert).not.toBeCalled()
-    })
-
-    it('Returns status 422 when password is not valid',async()=>{
-        const user = await invalidUserFactory()
-        const expectedError = { 
-            type: 'wrong_schema', 
-            message: "Password must include numbers and letters in lower and upper case" }
-
-        jest.spyOn(userRepository, 'findByEmail').mockImplementationOnce(():any=>{null})
-
-        const result = userService.create(user)
-
-        await expect(result).rejects.toEqual(expectedError)
-        expect(userRepository.findByEmail).not.toBeCalled()
-        expect(userRepository.insert).not.toBeCalled()
-    })
-})
-
-describe('Testing authenticate function', ()=>{
-
-    it('Returns token when email and password are correct',async()=>{
-        //for all it's
-        const token = 'USER_SPECIFIC_TOKEN'
-        jest.spyOn(jwt,'sign').mockImplementation(()=>token)
-
-        const user = await userFactory()
-        jest.spyOn(bcrypt,'compare').mockImplementationOnce(()=>true)
-        jest.spyOn(userRepository,'findByEmail').mockImplementationOnce(():any=>user)
-
-        const result = userService.authenticate({email:user.email,password:user.password})
-
-        await expect(result).resolves.toEqual(token)
-        expect(jwt.sign).toBeCalled()
-    })
-
-    it('Returns 401 when user is not found',async()=>{
-        const user = await userFactory()
-        const expectedError = { type: 'unauthorized', message: 'Incorrect email or password' }
-        jest.spyOn(bcrypt,'compare').mockImplementationOnce(()=>false)
-        jest.spyOn(userRepository,'findByEmail').mockImplementationOnce(():any=>{})
-
-        const result = userService.authenticate({email:user.email,password:user.password})
-
-        await expect(result).rejects.toEqual(expectedError)
-        expect(jwt.sign).not.toBeCalled()
-    })
-
-    it('Returns 401 when password is incorrect',async()=>{
-        const user = await userFactory()
-        const expectedError = { type: 'unauthorized', message: 'Incorrect email or password' }
-        jest.spyOn(bcrypt,'compare').mockImplementationOnce(()=>false)
-        jest.spyOn(userRepository,'findByEmail').mockImplementationOnce(():any=>user)
-
-        const result = userService.authenticate({email:user.email,password:user.password+'x'})
-
-        await expect(result).rejects.toEqual(expectedError)
-        expect(jwt.sign).not.toBeCalled()
-    })
-})
-
-describe('Testing verifyUserExists function',()=>{
-
-    it('Returns found user if user is found',async()=>{
+    it('Returns user name from query string id if it is provided',async()=>{
         const id = await idFactory()
         const user = await userFactory()
         const foundUser = {
@@ -115,20 +19,73 @@ describe('Testing verifyUserExists function',()=>{
             email:user.email,
             password:user.password
         }
+        const paramId = await idFactory()
+        const userId = await idFactory()
         jest.spyOn(userRepository,'findById').mockImplementationOnce(():any=>foundUser)
 
-        const result = userService.verifyIdExists(id)
+        const result = userService.getUserNameById(paramId,userId)
 
-        await expect(result).resolves.toEqual(foundUser)
+        await expect(result).resolves.toEqual(user.name)
+        expect(userRepository.findById).toBeCalledTimes(1)
     })
 
-    it('Returns 404 if user is not found',async()=>{
+    it('Returns user name from id of token session when no query string is provided',async()=>{
         const id = await idFactory()
-        const expectedError = {type:'not_found', message: 'No users were found with this id'}
+        const user = await userFactory()
+        const foundUser = {
+            id,
+            name:user.name,
+            email:user.email,
+            password:user.password
+        }
+        const paramId = NaN
+        const userId = await idFactory()
+        jest.spyOn(userRepository,'findById').mockImplementationOnce(():any=>foundUser)
+
+        const result = userService.getUserNameById(paramId,userId)
+
+        await expect(result).resolves.toEqual(user.name)
+        expect(userRepository.findById).toBeCalledTimes(1)
+    })
+
+    it('Returns 404 when user id provided is not found',async()=>{
+        const expectedError =  {type:'not_found', message: 'No users were found with this id'}
+        const paramId = await idFactory()
+        const userId = await idFactory()
         jest.spyOn(userRepository,'findById').mockImplementationOnce(():any=>{})
 
-        const result = userService.verifyIdExists(id)
+        const result = userService.getUserNameById(paramId,userId)
 
         await expect(result).rejects.toEqual(expectedError)
+        expect(userRepository.findById).toBeCalledTimes(1)
     })
+
+})
+
+describe('Testing deleteUserById function',()=>{
+
+    it('Deletes user successfully when id is found',async()=>{
+        const id = await idFactory()
+
+        jest.spyOn(userRepository,'deleteOne').mockImplementation(():any=>{})
+        jest.spyOn(userRepository,'findById').mockImplementationOnce(():any=>true)
+
+        const result = userService.deleteUserById(id)
+
+        await expect(result).resolves.toBeFalsy()
+        expect(userRepository.deleteOne).toBeCalled()
+    })
+
+    it('Returns 404 when user id is not found',async()=>{
+        const id = await idFactory()
+        const expectedError = {type:'not_found', message: 'No users were found with this id'}
+
+        jest.spyOn(userRepository,'findById').mockImplementationOnce(():any=>false)
+
+        const result = userService.deleteUserById(id)
+
+        await expect(result).rejects.toEqual(expectedError)
+        expect(userRepository.deleteOne).not.toBeCalled()
+    })
+
 })

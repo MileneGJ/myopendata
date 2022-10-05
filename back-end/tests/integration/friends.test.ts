@@ -1,8 +1,7 @@
 import prisma from "../../src/database/database";
 import supertest from "supertest";
 import app from "../../src/app";
-import { 
-    createScenarioSignInDeletedUser,
+import {
     createScenarioTwoUsers, 
     createScenarioTwoUsersOneDeleted, 
     deleteAllData, 
@@ -87,58 +86,4 @@ describe('Testing POST /friends/:id',()=>{
         expect(friendLink).toBeFalsy()
         expect(result.body.id).toBeFalsy()
     })
-})
-
-describe('Testing GET /user',()=>{
-
-    it('Returns 200 and user name from id provided by query string',async()=>{
-        const {token, friendId} = await createScenarioTwoUsers()
-
-        const result = await supertest(app).get(`/user?id=${friendId}`)
-        .set('Authorization',`Bearer ${token}`)
-
-        expect(result.status).toBe(200)
-        expect(result.body.name).not.toBeFalsy()
-    })
-
-    it('Returns 200 and user name from token session when no query string is given',async()=>{
-        const {token} = await createScenarioTwoUsers()
-
-        const result = await supertest(app).get(`/user`)
-        .set('Authorization',`Bearer ${token}`)
-
-        expect(result.status).toBe(200)
-        expect(result.body.name).not.toBeFalsy()
-    })
-
-    it('Returns 404 when user id from query string is not found',async()=>{
-        const {token, friendId} = await createScenarioTwoUsers()
-
-        const result = await supertest(app).get(`/user?id=${friendId*(-1)}`)
-        .set('Authorization',`Bearer ${token}`)
-
-        expect(result.status).toBe(404)
-        expect(result.body.name).toBeFalsy()
-    })
-
-    it('Returns 404 when query string is not provided and user id from token session is not found',async()=>{
-        const token = await createScenarioSignInDeletedUser()
-
-        const result = await supertest(app).get(`/user`)
-        .set('Authorization',`Bearer ${token}`)
-
-        expect(result.status).toBe(404)
-        expect(result.body.name).toBeFalsy()
-    })
-
-    it('Returns 401 when token is invalid',async()=>{
-        const {token} = await createScenarioTwoUsers()
-
-        const result = await supertest(app).get(`/user`)
-        .set('Authorization',`Bearer ${token+'x'}`)
-
-        expect(result.status).toBe(401)
-        expect(result.body.name).toBeFalsy()
-    })
-
 })

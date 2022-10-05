@@ -15,3 +15,7 @@ export async function findById (id:number) {
     const foundUser = await prisma.users.findFirst({where:{id}})
     return foundUser
 }
+
+export async function deleteOne (id:number) {
+    await prisma.users.delete({where:{id}})
+}

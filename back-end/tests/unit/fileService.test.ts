@@ -1,6 +1,6 @@
 import * as filesRepository from '../../src/repositories/filesRepository'
 import * as fileService from '../../src/services/fileServices'
-import * as userService from '../../src/services/authServices'
+import * as userService from '../../src/services/userServices'
 import * as keywordService from '../../src/services/keywordServices'
 import fileFactory from '../factories/fileFactory';
 import idFactory from '../factories/idFactory';

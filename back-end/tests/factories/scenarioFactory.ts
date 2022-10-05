@@ -25,14 +25,14 @@ export async function createScenarioSignUpOneUser() {
 
 export async function createScenarioSignInOneUser() {
     const user = await createScenarioSignUpOneUser()
-    return generateToken(user.id)
+    return {token:generateToken(user.id),userId:user.id}
 }
 
 export async function createScenarioSignInDeletedUser() {
     const user = await createScenarioSignUpOneUser()
     const token = generateToken(user.id)
     await prisma.users.delete({ where: { id: user.id } })
-    return token
+    return {token,userId:user.id}
 }
 
 export async function createScenarioOneUserOneFile() {

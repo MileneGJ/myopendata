@@ -1,5 +1,5 @@
 import * as filesRepository from '../repositories/filesRepository'
-import * as userService from '../services/authServices'
+import * as userService from '../services/userServices'
 import * as keywordService from '../services/keywordServices'
 import { IFileParams, IFileBody, IFileDB } from '../types/fileTypes';
 import { IKeywordReturnDB } from '../types/keywordTypes';
