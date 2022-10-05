@@ -1,8 +1,11 @@
+import { useNavigate } from "react-router-dom";
 import { FileSpan } from "./FileStyles";
 
 export default function File ({id, title, description, username}) {
+    const navigate = useNavigate()
+
     return (
-        <FileSpan>
+        <FileSpan onClick={()=>navigate(`/file/${id}`)}>
             <div>
                 <img src="" alt="" />
                 <div>

@@ -1,3 +1,4 @@
+import createConfig from "../utils/createConfigApi";
 import api from "./api";
 
 export async function listAll(token) {
@@ -18,10 +19,8 @@ export async function create(token,data) {
   return response.data;
 }
 
-function createConfig(token) {
-  return {
-    headers:{
-      authorization: `Bearer ${token}`
-    }
-  }
+export async function getFileById(token,id) {
+  const config = createConfig(token)
+  const response = await api.get(`/files/${id}`,config);
+  return response.data;
 }

@@ -8,7 +8,7 @@ width:100%;
 height: 90px;
 display: flex;
 justify-content: space-between;
-padding:10px 20px;
+padding:10px 40px;
 box-sizing:border-box;
 align-items:center;
 img {
@@ -37,6 +37,16 @@ select{
 div{
     color:#021a67;
     font-size:20px;
+}
+>div:last-child{
+    color:#3b99ed;
+    height:45px;
+    padding:10px;
+    box-sizing:border-box;
+    display:flex;
+    align-items:center;
+    border-radius:50px;
+    border:2px solid #3b99ed;
 }
 `
 
