@@ -1,14 +1,15 @@
 import { useEffect, useState } from "react";
-import { listAll } from "../../services/files";
+import { listAll, listByField } from "../../services/files";
 import errorHandler from "../../utils/errorHandler";
 import Header from "../Layout/Header";
 import File from "./File";
 import { Container, InnerContent, UploadButton } from "./HomepageStyles";
-import { Link, useNavigate } from 'react-router-dom'
+import { Link, useNavigate, useLocation } from 'react-router-dom'
 
 
 export default function HomePage() {
     const [fileList, setFileList] = useState(null)
+    const { search } = useLocation();
     const token = localStorage.getItem('token')
     const navigate = useNavigate()
 
@@ -19,15 +20,23 @@ export default function HomePage() {
         }
         async function returnList() {
             try {
-                const response = await listAll(token)
-                setFileList(response)
+                if(search.length>0){
+                    const searchString = search.replace('?','').split('=')
+                    const field = searchString[0]
+                    const content = searchString[1]
+                    const response = await listByField(token,{field,content})
+                    setFileList(response)
+                } else {
+                    const response = await listAll(token)
+                    setFileList(response)
+                }
             } catch (error) {
                 errorHandler(error)
             }
         }
         returnList()
 
-    }, [])
+    }, [search])
 
     return (
         <Container>

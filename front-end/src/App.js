@@ -14,6 +14,7 @@ function App() {
       <Route path='/file/:id' element={<FilePage />} />
       <Route path='/new-file' element={<CreateFilePage />} />
       <Route path='/signup' element={<SignUp />} />
+      <Route path='/search' element={<HomePage />} />
     </Routes>
     </BrowserRouter>
   );

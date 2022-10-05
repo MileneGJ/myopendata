@@ -2,7 +2,7 @@ import { useState } from "react";
 import { create } from "../../services/files";
 import errorHandler from "../../utils/errorHandler";
 import { Form } from "../Auth/AuthStyles";
-import { Container, InnerContent, UploadButton } from "../HomePage/HomepageStyles";
+import { Container, InnerContent } from "../HomePage/HomepageStyles";
 import Header from "../Layout/Header";
 
 export default function CreateFilePage () {

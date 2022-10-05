@@ -13,7 +13,7 @@ color:#021a67;
 display:flex;
 flex-direction:column;
 align-items:center;
-h2{
+>h2{
     font-size:24px;
     text-align:center;
     margin:24px 0;
@@ -29,7 +29,7 @@ h3{
     margin:20px 0;
     text-align:center;
 }
-p{
+>p{
     color:#2b3f51;
     width:400px;
     text-align:justify;

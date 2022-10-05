@@ -14,7 +14,7 @@ align-items:center;
 img {
     height:70px;
 }
-div{
+form{
     width:40%;
     display:flex;
 }
@@ -34,7 +34,7 @@ select{
     width:auto;
     background-color:#FFFFFF;
 }
-span{
+div{
     color:#021a67;
     font-size:20px;
 }
