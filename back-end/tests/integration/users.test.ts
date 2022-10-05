@@ -7,6 +7,7 @@ import {
     createScenarioSignInOneUser,
     createScenarioSignUpOneUser, 
     createScenarioTwoUsers, 
+    createScenarioUserWithFileLinksAndFriends, 
     deleteAllData, 
     disconnectPrisma 
 } from "../factories/scenarioFactory";
@@ -148,16 +149,29 @@ describe('Testing GET /user',()=>{
 
 describe('Testing DELETE /user',()=>{
 
-    it('Returns 204 when user id was found and deleted successfully',async()=>{
-        const {token,userId} = await createScenarioSignInOneUser()
+    it('Returns 204 and delete user and its relations when user id is found',async()=>{
+        const {
+            token,
+            userId,
+            keywordIds, 
+            linkKeywordIds
+        } = await createScenarioUserWithFileLinksAndFriends()
 
         const result = await supertest(app).delete('/user')
         .set('Authorization',`Bearer ${token}`)
 
         const foundUser = await prisma.users.findFirst({where:{id:userId}})
+        const foundFiles = await prisma.files.findMany({where:{userId}})
+        const foundKeywords = await prisma.keywords.findMany({where:{id:{in:keywordIds}}})
+        const foundKeywordLinks = await prisma.filesKeywords.findMany({where:{id:{in:linkKeywordIds}}})
+        const foundFriends = await prisma.friends.findMany({where:{user1Id:userId}})
 
         expect(result.status).toBe(204)
         expect(foundUser?.id).toBeFalsy()
+        expect(foundFiles.length).toBe(0)
+        expect(foundKeywords.length).toBe(0)
+        expect(foundKeywordLinks.length).toBe(0)
+        expect(foundFriends.length).toBe(0)
     })
 
     it('Returns 404 when user id was not found',async()=>{

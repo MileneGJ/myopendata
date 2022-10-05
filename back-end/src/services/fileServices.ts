@@ -96,3 +96,8 @@ function formatFileOutput (fileArray:IFileReturnDB[]){
     }
     return []
 }
+
+export async function deleteFilesFromUserId (userId:number) {
+    await keywordService.deleteKeywordsFromFilesFromUser(userId)
+    await filesRepository.deleteFromUserId(userId)
+}

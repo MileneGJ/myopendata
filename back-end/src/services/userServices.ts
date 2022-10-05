@@ -1,4 +1,6 @@
 import * as userRepository from '../repositories/userRepository'
+import * as fileService from '../services/fileServices'
+import * as friendService from '../services/friendServices'
 import { IUserDB } from '../types/userTypes'
 import { notFoundError } from '../utils/errorUtils'
 
@@ -22,5 +24,7 @@ export async function getUserNameById (ParamUserId:number,TokenUserId:number) {
 
 export async function deleteUserById(userId:number) {
     await verifyIdExists(userId)
+    await fileService.deleteFilesFromUserId(userId)
+    await friendService.deleteFriendLinkFromUser(userId)
     await userRepository.deleteOne(userId)
 }

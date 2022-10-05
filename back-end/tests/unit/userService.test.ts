@@ -1,5 +1,7 @@
 import userFactory from '../factories/userFactory';
 import * as userService from '../../src/services/userServices'
+import * as fileService from '../../src/services/fileServices'
+import * as friendService from '../../src/services/friendServices'
 import * as userRepository from '../../src/repositories/userRepository'
 import idFactory from '../factories/idFactory';
 
@@ -67,7 +69,10 @@ describe('Testing deleteUserById function',()=>{
     it('Deletes user successfully when id is found',async()=>{
         const id = await idFactory()
 
+        jest.spyOn(fileService,'deleteFilesFromUserId').mockImplementation(():any=>{})
+        jest.spyOn(friendService,'deleteFriendLinkFromUser').mockImplementation(():any=>{})
         jest.spyOn(userRepository,'deleteOne').mockImplementation(():any=>{})
+
         jest.spyOn(userRepository,'findById').mockImplementationOnce(():any=>true)
 
         const result = userService.deleteUserById(id)

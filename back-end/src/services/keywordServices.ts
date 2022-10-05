@@ -30,3 +30,14 @@ export async function verifyKeywordsInDB(keywords: string[]) {
     }
     return keywordIds
 }
+
+export async function deleteKeywordsFromFilesFromUser(userId:number) {
+    await filesKeywordService.deleteLinksFromFilesFromUser(userId)
+    await deleteOrphanKeywords()
+}
+
+async function deleteOrphanKeywords() {
+    const orphanKeywords = await keywordRepository.findOrphans()
+    const idArray = orphanKeywords.map(k=>k.id)
+    await keywordRepository.deleteByIds(idArray)
+}

@@ -6,3 +6,7 @@ export async function verifyFileKeywordLink (fileId:number, keywordId:number) {
         await filesKeywordsRepository.insert(fileId,keywordId)
     }
 }
+
+export async function deleteLinksFromFilesFromUser(userId:number) {
+    await filesKeywordsRepository.deleteFromFileFromUser(userId)
+}

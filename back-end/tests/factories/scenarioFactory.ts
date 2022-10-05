@@ -122,3 +122,41 @@ export async function createScenarioOneFile(){
     })
     return {token:generateToken(user.id),file:createdFile}
 }
+
+export async function createScenarioUserWithFileLinksAndFriends () {
+    const user = await createScenarioSignUpOneUser()
+    const file = await fileFactory()
+    const createdFile = await prisma.files.create({
+        data: {
+            title: file.title,
+            description: file.description,
+            csvlink: file.csvlink,
+            userId: user.id
+        }
+    })
+    let keywordIds = []
+    let linkKeywordIds = []
+    
+    for(let i=0; i<file.keywords.length; i++) {
+        const createdKeyword = await prisma.keywords.create({
+            data:{name:file.keywords[i]}
+        })
+        keywordIds.push(createdKeyword.id)
+        const linkFileKey = await prisma.filesKeywords.create({
+            data:{fileId:createdFile.id,keywordId:createdKeyword.id}
+        })
+        linkKeywordIds.push(linkFileKey.id)
+    }
+
+    const friend = await createScenarioSignUpOneUser()
+    await prisma.friends.create({data:{user1Id:user.id,user2Id:friend.id}})
+
+    return {
+        token:generateToken(user.id),
+        userId:user.id,
+        fileId: createdFile.id,
+        keywordIds,
+        linkKeywordIds,
+        friendId:friend.id
+    }
+}

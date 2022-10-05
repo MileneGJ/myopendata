@@ -15,3 +15,7 @@ async function verifyFriendLink (friendId:number, userId:number) {
         throw conflictError('This user was already added as a friend')
     }
 }
+
+export async function deleteFriendLinkFromUser(userId:number) {
+    await friendsRepository.deleteAllFriendsFromUser(userId)
+}

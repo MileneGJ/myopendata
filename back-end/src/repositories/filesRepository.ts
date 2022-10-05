@@ -6,6 +6,10 @@ export async function insert(file: TFileInsertDB) {
     return await prisma.files.create({ data: file })
 }
 
+export async function deleteFromUserId(userId:number) {
+    await prisma.files.deleteMany({where:{userId}})
+}
+
 export async function findByLink(csvlink: string): Promise<IFileDB> {
     const files = await prisma.files.findFirst({ where: { csvlink } })
     return files as IFileDB
