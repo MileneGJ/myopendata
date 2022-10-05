@@ -16,6 +16,16 @@ export interface IFileBody {
 
 export type TFileInsertDB = Omit<IFileDB,'id' | 'createdAt'>
 
+export interface IFileReturnDB {
+    id: number;
+    title: string;
+    description: string;
+    csvlink: string;
+    users: {
+        name:string
+    }
+}
+
 export interface IFileParams {
     keyword: string | undefined;
     title: string | undefined;

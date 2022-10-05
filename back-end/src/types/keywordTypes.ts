@@ -1,7 +1,7 @@
-import { IFileDB } from "./fileTypes"
+import { IFileReturnDB } from "./fileTypes"
 
 export interface IKeywordReturnDB {
     filesKeywords : {
-      files: IFileDB
+      files: IFileReturnDB
     }[]
   }

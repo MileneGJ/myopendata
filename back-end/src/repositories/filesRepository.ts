@@ -1,24 +1,36 @@
 import prisma from "../database/database";
-import { IFileDB, TFileInsertDB } from "../types/fileTypes";
+import { IFileDB, IFileReturnDB, TFileInsertDB } from "../types/fileTypes";
 import { IKeywordReturnDB } from "../types/keywordTypes";
 
 export async function insert(file: TFileInsertDB) {
     return await prisma.files.create({ data: file })
 }
 
-export async function findByLink(csvlink: string):Promise<IFileDB> {
+export async function findByLink(csvlink: string): Promise<IFileDB> {
     const files = await prisma.files.findFirst({ where: { csvlink } })
     return files as IFileDB
 }
 
-export async function findByUser(user: string):Promise<IFileDB[]> {
+export async function findByUser(user: string): Promise<IFileReturnDB[]> {
     return await prisma.files.findMany({
         where: {
             users: {
                 is: {
                     name: {
-                        contains: user
+                        contains: user,
+                        mode: 'insensitive'
                     }
+                }
+            }
+        },
+        select: {
+            id: true,
+            title: true,
+            description: true,
+            csvlink: true,
+            users: {
+                select: {
+                    name: true
                 }
             }
         },
@@ -30,17 +42,30 @@ export async function findByUser(user: string):Promise<IFileDB[]> {
     })
 }
 
-export async function findByKeyword(keyword: string):Promise<IKeywordReturnDB[]>  {
+export async function findByKeyword(keyword: string): Promise<IKeywordReturnDB[]> {
     return await prisma.keywords.findMany({
         where: {
             name: {
-                contains: keyword
+                contains: keyword,
+                mode: 'insensitive'
             }
         },
         select: {
             filesKeywords: {
                 select: {
-                    files: true
+                    files: {
+                        select: {
+                            id: true,
+                            title: true,
+                            description: true,
+                            csvlink: true,
+                            users: {
+                                select: {
+                                    name: true
+                                }
+                            }
+                        }
+                    }
                 }
             }
         },
@@ -50,28 +75,64 @@ export async function findByKeyword(keyword: string):Promise<IKeywordReturnDB[]>
     })
 }
 
-export async function findByTitle(title: string):Promise<IFileDB[]>  {
+export async function findByTitle(title: string): Promise<IFileReturnDB[]> {
     return await prisma.files.findMany({
         where: {
             title: {
-                contains: title
+                contains: title,
+                mode: 'insensitive'
             }
         },
-        orderBy:{
+        select:{
+            id:true,
+            title:true,
+            description:true,
+            csvlink:true,
+            users:{
+                select:{
+                    name:true
+                }
+            }
+        },
+        orderBy: {
             title: 'asc'
         }
     })
 }
 
-export async function findAll():Promise<IFileDB[]>  {
+export async function findAll(): Promise<IFileReturnDB[]> {
     return await prisma.files.findMany({
-        orderBy:{
+        select:{
+            id:true,
+            title:true,
+            description:true,
+            csvlink:true,
+            users:{
+                select:{
+                    name:true
+                }
+            }
+        },
+        orderBy: {
             createdAt: 'desc'
         }
     })
 }
 
-export async function findById(id:number):Promise<IFileDB>  {
-    const file = await prisma.files.findFirst({where:{id}})
-    return file as IFileDB
+export async function findById(id: number): Promise<IFileReturnDB> {
+    const file = await prisma.files.findFirst({ 
+        where: { id },
+        select:{
+            id:true,
+            title:true,
+            description:true,
+            csvlink:true,
+            users:{
+                select:{
+                    name:true
+                }
+            }
+        }
+    })
+    return file as IFileReturnDB
 }
