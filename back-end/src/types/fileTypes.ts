@@ -22,8 +22,13 @@ export interface IFileReturnDB {
     description: string;
     csvlink: string;
     users: {
-        name:string
-    }
+        name:string;
+    };
+    filesKeywords:{
+        keywords:{
+            name:string;
+        }
+    }[]
 }
 
 export interface IFileParams {

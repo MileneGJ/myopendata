@@ -36,6 +36,15 @@ export async function findByUser(user: string): Promise<IFileReturnDB[]> {
                 select: {
                     name: true
                 }
+            },
+            filesKeywords:{
+                select:{
+                    keywords:{
+                        select:{
+                            name:true
+                        }
+                    }
+                }
             }
         },
         orderBy: {
@@ -67,6 +76,15 @@ export async function findByKeyword(keyword: string): Promise<IKeywordReturnDB[]
                                 select: {
                                     name: true
                                 }
+                            },
+                            filesKeywords:{
+                                select:{
+                                    keywords:{
+                                        select:{
+                                            name:true
+                                        }
+                                    }
+                                }
                             }
                         }
                     }
@@ -96,6 +114,15 @@ export async function findByTitle(title: string): Promise<IFileReturnDB[]> {
                 select:{
                     name:true
                 }
+            },
+            filesKeywords:{
+                select:{
+                    keywords:{
+                        select:{
+                            name:true
+                        }
+                    }
+                }
             }
         },
         orderBy: {
@@ -114,6 +141,15 @@ export async function findAll(): Promise<IFileReturnDB[]> {
             users:{
                 select:{
                     name:true
+                }
+            },
+            filesKeywords:{
+                select:{
+                    keywords:{
+                        select:{
+                            name:true
+                        }
+                    }
                 }
             }
         },
@@ -134,6 +170,15 @@ export async function findById(id: number): Promise<IFileReturnDB> {
             users:{
                 select:{
                     name:true
+                }
+            },
+            filesKeywords:{
+                select:{
+                    keywords:{
+                        select:{
+                            name:true
+                        }
+                    }
                 }
             }
         }

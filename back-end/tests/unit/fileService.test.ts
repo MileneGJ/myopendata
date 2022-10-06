@@ -191,10 +191,12 @@ describe('Testing getOneFile function',()=>{
         const userId = await idFactory()
         const file = await fileFactory()
         const name = await wordFactory()
+        const filesKeywords = file.keywords.map(k=>({keywords:{name:k}}))
+        const returnedFile = {...file,id,users:{name},filesKeywords}
 
         jest.spyOn(userService,'verifyIdExists').mockImplementation(():any=>true)
 
-        jest.spyOn(filesRepository,'findById').mockImplementationOnce(():any=>({...file,id,users:{name}}))
+        jest.spyOn(filesRepository,'findById').mockImplementationOnce(():any=>returnedFile)
 
         const result = fileService.getOneFile(userId,id)
 
