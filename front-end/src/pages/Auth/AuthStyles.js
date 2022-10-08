@@ -7,22 +7,35 @@ flex-direction:column;
 align-items:center;
 justify-content:center;
 img{
-    height:200px;
+    width:100%;
+    max-width:400px;
     margin-top:60px;
     margin-bottom:10px;
 }
 h1 {
     font-size:30px;
+    text-align:center;
     color:#000000;
     margin-top:10px;
     margin-bottom:120px;
 }
 a{
     text-decoration:none;
+    text-align: center;
     color:#021a67;
     font-size:18px;
     margin:10px;
     margin-bottom:120px;
+}
+.auth > input {
+    max-width: 400px;
+}
+@media (max-width: 600px) {
+    padding:0 50px;
+    box-sizing: border-box;
+    h1{
+    font-size:26px;
+    }
 }
 `
 
@@ -30,7 +43,8 @@ const Form = styled.form`
 display:flex;
 flex-direction:column;
 align-items:center;
-width:400px;
+width:100%;
+max-width:500px;
 input, textarea {
   font-family: 'Lexend', sans-serif;
   width:100%;
@@ -50,13 +64,23 @@ button {
     background-color: #021a67;
     color:#FFFFFF;
     font-size:20px;
+    font-weight: 700;
     margin:15px 0;
     border:none;
     border-radius:10px;
-    width:40%;
+    padding:0 20px;
+    box-sizing:border-box;
     height:42px;
 }
 
+@media (max-width: 600px) {
+    input,textarea,button{
+    font-size:16px;
+    }
+    input,button{
+    height:34px;
+    }
+}
 `
 
 

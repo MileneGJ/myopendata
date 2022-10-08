@@ -28,7 +28,7 @@ export default function SignIn () {
         <AuthContainer>
             <img src={logo} alt ='' />
             <h1>Easily find and store data online</h1>
-            <Form onSubmit={authenticateUser}>
+            <Form onSubmit={authenticateUser} className='auth'>
                 <input 
                 type='email' 
                 placeholder='Email' 

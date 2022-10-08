@@ -29,7 +29,7 @@ export default function SignUp () {
         <AuthContainer>
             <img src={logo} alt =''  />
             <h1 style={{'marginBottom':'70px'}} >Easily find and store data online</h1>
-            <Form onSubmit={createUser}>
+            <Form onSubmit={createUser} className='auth'>
                 <input 
                 type='text' 
                 placeholder='Name' 
