@@ -4,6 +4,7 @@ import { create } from "../../services/files";
 import errorHandler from "../../utils/errorHandler";
 import { Form } from "../Auth/AuthStyles";
 import PageTemplate from "../../components/layout/PageTemplate";
+import ModalForConfirmation from "../../components/ModalForConfirmation";
 
 export default function CreateFilePage() {
     const navigate = useNavigate()
@@ -13,6 +14,7 @@ export default function CreateFilePage() {
         description: '',
         keywords: ''
     })
+    const [goBackOpen,setGoBack] = useState(false)
     const token = localStorage.getItem('token')
 
     useEffect(() => {
@@ -36,8 +38,8 @@ export default function CreateFilePage() {
             return newK
         })
         try {
-            const createdFile = await create(token, { ...newFile, keywords })
-            alert(`"${createdFile.title}" was successfully created`)
+            await create(token, { ...newFile, keywords })
+            setGoBack(true)
         } catch (error) {
             errorHandler(error)
         }
@@ -78,6 +80,17 @@ export default function CreateFilePage() {
 
                 <button type='submit'>Upload</button>
             </Form>
+
+        <ModalForConfirmation
+          modalIsOpen={goBackOpen}
+          closeModal={()=>setGoBack(false)}
+          action={()=>navigate('/home')}
+          questionAnswers={[
+            `"${newFile.title}" was successfully created. Add another file?`,
+            "Yes",
+            "No, go back",
+          ]}
+        />
         </PageTemplate>
     )
 }
