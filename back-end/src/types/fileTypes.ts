@@ -1,3 +1,5 @@
+import { IFileDataReturnDB } from "./fileDataTypes";
+
 export interface IFileDB {
     id: number;
     title: string;
@@ -20,7 +22,7 @@ export interface IFileReturnDB {
     id: number;
     title: string;
     description: string;
-    csvlink: string;
+    csvlink: IFileDataReturnDB[];
     users: {
         name:string;
     };

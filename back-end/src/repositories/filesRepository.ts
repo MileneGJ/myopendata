@@ -11,8 +11,15 @@ export async function deleteFromUserId(userId:number) {
 }
 
 export async function findByLink(csvlink: string): Promise<IFileDB> {
-    const files = await prisma.files.findFirst({ where: { csvlink } })
-    return files as IFileDB
+    const files = await prisma.fileData.findFirst({ 
+        where: { 
+            url:csvlink
+         },
+         select:{
+             files:true
+         }
+         })
+    return files?.files as IFileDB
 }
 
 export async function findByUser(user: string): Promise<IFileReturnDB[]> {

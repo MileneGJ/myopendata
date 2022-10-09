@@ -80,7 +80,8 @@ function formatKeywordOutput(fileArray: IKeywordReturnDB[]) {
                 title: f.title,
                 description: f.description,
                 csvlink: f.csvlink,
-                author: f.users.name
+                author: f.users.name,
+                keywords
             })
         })
     }

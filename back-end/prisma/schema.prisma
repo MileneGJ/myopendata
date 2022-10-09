@@ -25,10 +25,21 @@ model Files {
   id Int @id @default(autoincrement())
   title String
   description String
-  csvlink String @unique
   users Users @relation(fields: [userId], references: [id])
   userId Int
   filesKeywords FilesKeywords[]
+  csvlink FileData[]
+  createdAt DateTime @default(now())
+}
+
+model FileData {
+  id Int @id @default(autoincrement())
+  key String @unique
+  name String
+  size Int
+  url String @unique
+  files Files @relation(fields: [fileId], references: [id])
+  fileId Int
   createdAt DateTime @default(now())
 }
 

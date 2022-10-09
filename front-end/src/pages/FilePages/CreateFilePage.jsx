@@ -63,6 +63,7 @@ export default function CreateFilePage() {
         }))
 
         setUploadedFiles([...uploadedFiles,...newUploadedFiles])
+        newUploadedFiles.forEach(f=>processUpload(f))
     }
 
     return (
