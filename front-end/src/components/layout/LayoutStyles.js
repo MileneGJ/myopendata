@@ -11,6 +11,9 @@ align-items:center;
     max-width:900px;
     text-align: justify;
     }
+    a{
+        font-size:16px;
+    }
 }
 @media (max-width: 600px) {
     margin-top:70px;
@@ -30,6 +33,7 @@ align-items:center;
 }
 a{
     color:#021a67;
+    font-size:20px;
     font-weight:700;
 }
 h3{
@@ -65,6 +69,7 @@ align-items:center;
 background-color: #FFFFFF;
 img {
     height:70px;
+    cursor: pointer;
 }
 
 @media (max-width:600px) {

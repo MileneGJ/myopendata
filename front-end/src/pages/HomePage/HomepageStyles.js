@@ -2,6 +2,7 @@ import styled from 'styled-components'
 
 
 const UploadButton = styled.button`
+cursor:pointer;
 position:fixed;
 bottom:54px;
 right:40px;

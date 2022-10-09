@@ -71,6 +71,7 @@ button {
     padding:0 20px;
     box-sizing:border-box;
     height:42px;
+    cursor:pointer;
 }
 
 @media (max-width: 600px) {

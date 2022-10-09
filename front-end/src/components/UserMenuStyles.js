@@ -6,6 +6,7 @@ p:first-child{
     color:#021a67;
     font-size:20px;
     line-height:30px;
+    cursor:pointer;
 }
 position:fixed;
 right:40px;
@@ -39,6 +40,7 @@ a{
 }
 p{
     margin:5px 0;
+    cursor:pointer;
 }
 `
 
