@@ -19,6 +19,7 @@ export default function FilePage() {
         async function getFileData() {
             try {
                 const response = await getFileById(token, id)
+                console.log(response)
                 setFile(response)
             } catch (error) {
                 errorHandler(error)
@@ -32,8 +33,10 @@ export default function FilePage() {
                 <>
                     <h2>{file.title}</h2>
                     <p>{file.description}</p>
-                    <p style={{ textAlign: 'left' }}>{"Get data on: "}
-                        <a href={file.csvlink}>{file.csvlink}</a>
+                    <p style={{ textAlign: 'left' }}>{"Get data on: "}<br/>
+                        {file.csvlinks.map((link,index)=>
+                            <a key={index} href={link.url}>{link.name}<br/></a>
+                        )}
                     </p>
                     <p style={{ fontWeight: '700' }}>{`Author: ${file.author}`}</p>
                     <p>{`Keywords: ${file.keywords.join(', ')}`}</p>

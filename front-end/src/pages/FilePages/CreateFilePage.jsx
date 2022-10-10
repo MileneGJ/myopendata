@@ -1,24 +1,25 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { create } from "../../services/files";
+import { create, createFileData } from "../../services/files";
 import errorHandler from "../../utils/errorHandler";
 import { Form } from "../Auth/AuthStyles";
 import PageTemplate from "../../components/layout/PageTemplate";
 import ModalForConfirmation from "../../components/createFile/ModalForConfirmation";
 import UploadFile from "../../components/createFile/Upload";
 import UploadList from "../../components/createFile/UploadList";
-import {uniqueId } from 'lodash'
-import {filesize} from 'filesize'
+import { uniqueId } from 'lodash'
+import { filesize } from 'filesize'
 
 export default function CreateFilePage() {
     const navigate = useNavigate()
     const [newFile, setNewFile] = useState({
         title: '',
-        csvlink: '',
+        csvlink: [],
         description: '',
         keywords: ''
     })
-    const [uploadedFiles,setUploadedFiles] = useState([])
+    const [uploadedFiles, setUploadedFiles] = useState([])
+    // const [concludedFiles, setConcludedFiles] = useState([])
     const [goBackOpen, setGoBack] = useState(false)
     const token = localStorage.getItem('token')
 
@@ -31,6 +32,8 @@ export default function CreateFilePage() {
 
     async function createFile(e) {
         e.preventDefault()
+        console.log(newFile)
+        alert()
         const rawKeywords = newFile.keywords.toLowerCase().split(';')
         const keywords = rawKeywords.map(k => {
             let newK = k
@@ -50,21 +53,52 @@ export default function CreateFilePage() {
         }
     }
 
-    function handleUpload(files){
-        const newUploadedFiles = files.map((file,index)=>({
-            id:uniqueId(),
-            name:file.name,
-            readableSize:filesize(file.size),
-            progress:0,
-            uploaded:false,
-            error:false,
-            url:null,
+    function handleUpload(files) {
+        const newUploadedFiles = files.map((file, index) => ({
+            id: uniqueId(),
+            name: file.name,
+            readableSize: filesize(file.size),
+            progress: 0,
+            uploaded: false,
+            error: false,
+            url: null,
             file
         }))
 
-        setUploadedFiles([...uploadedFiles,...newUploadedFiles])
-        newUploadedFiles.forEach(f=>processUpload(f))
+        setUploadedFiles([...uploadedFiles, ...newUploadedFiles])
+        newUploadedFiles.forEach(f => processUpload(f))
     }
+
+    async function processUpload(uploadedFile) {
+        const data = new FormData();
+        data.append('file', uploadedFile.file, uploadedFile.name)
+
+        // const onUploadProgress = e => {
+        //     const progress = parseInt(Math.round((e.loaded * 100) / e.total))
+        //     updateFile(uploadedFile.id,{progress})
+        // }
+        try {
+            
+            const concludedFile = await createFileData(token, data)
+            // updateFile(uploadedFile.id,{
+            //     uploaded:true,
+            //     id:concludedFile.id,
+            //     url:concludedFile.url
+            // })
+            setNewFile({...newFile,csvlink:[...newFile.csvlink,concludedFile.url]})
+            console.log(newFile.csvlink)
+        } catch (error) {
+            console.log(error)
+            errorHandler(error)
+        }
+    }
+
+    // function updateFile (id,data) {
+    //     setConcludedFiles(uploadedFiles.map(uploadedFile=>{
+    //         return id === uploadedFile.id? {...uploadedFile,...data} : uploadedFile
+    //     }))
+    //     console.log(concludedFiles)
+    // }
 
     return (
         <PageTemplate header={true} footer={false}>
@@ -87,8 +121,9 @@ export default function CreateFilePage() {
                     value={newFile.description}
                     onChange={e => setNewFile({ ...newFile, description: e.target.value })}
                 />
-                <UploadFile onUpload={handleUpload} newFile={newFile} setNewFile={setNewFile} />
-                {uploadedFiles.length?<UploadList files={uploadedFiles} />:null}
+                <UploadFile onUpload={handleUpload} />
+                {uploadedFiles.length ? <UploadList files={uploadedFiles} /> : null}
+                {/*concludedFiles.length ? <UploadList files={concludedFiles} /> : null*/}
                 <input
                     type='text'
                     placeholder="Keywords"

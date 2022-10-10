@@ -17,12 +17,12 @@ export default function UploadList({files}) {
                 </div>
                 <div>
                     {!uploaded&&!error?<CircularProgressbar
+                    value={progress} 
                         styles={{
                             root: { width: 24 },
                             path: { stroke: '#6aa84f' }
                         }}
                         strokeWidth={10}
-                        percentage={progress}
                     />:null}
 
                     {url?<a

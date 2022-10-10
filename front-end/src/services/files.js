@@ -24,3 +24,10 @@ export async function getFileById(token,id) {
   const response = await api.get(`/files/${id}`,config);
   return response.data;
 }
+
+export async function createFileData(token, data, onUploadProgress) {
+  const config = createConfig(token)
+  config.onUploadProgress = onUploadProgress
+  const response = await api.post("/filedata", data, config);
+  return response.data;
+}

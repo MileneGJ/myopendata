@@ -62,7 +62,7 @@ export function fileFilter (
 ): void {
 
     const allowedMimes = [
-        'text/txt',
+        'text/plain',
         'text/csv'
     ];
     if (allowedMimes.includes(file.mimetype)) {

@@ -7,6 +7,7 @@ align-items:center;
 width:90%;
 box-sizing:border-box;
 margin:10px 0;
+cursor:pointer;
 div{
     overflow: hidden;
 }
