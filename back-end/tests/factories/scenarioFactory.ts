@@ -3,6 +3,7 @@ import userFactory from "./userFactory";
 import { encryptPassword, generateToken } from "../../src/services/authServices";
 import fileFactory from "./fileFactory";
 import wordFactory from "./wordFactory";
+import fileDataFactory from "./fileDataFactory";
 
 export async function deleteAllData() {
     await prisma.$executeRaw`TRUNCATE TABLE "Users" RESTART IDENTITY CASCADE;`
@@ -42,11 +43,10 @@ export async function createScenarioOneUserOneFile() {
         data: {
             title: file.title,
             description: file.description,
-            csvlink: file.csvlink,
             userId: user.id
         }
     })
-    return { token: generateToken(user.id), file }
+    return { token: generateToken(user.id), file, userId:user.id }
 }
 
 export async function createScenarioTwoUsersFourFiles() {
@@ -62,7 +62,6 @@ export async function createScenarioTwoUsersFourFiles() {
                 data: {
                     title: file.title,
                     description: file.description,
-                    csvlink: file.csvlink,
                     userId: user.id
                 }
             })
@@ -82,7 +81,6 @@ export async function createScenarioFourFiles(){
             data: {
                 title: file.title,
                 description: file.description,
-                csvlink: file.csvlink,
                 userId: user.id
             }
         })
@@ -116,11 +114,20 @@ export async function createScenarioOneFile(){
         data: {
             title: file.title,
             description: file.description,
-            csvlink: file.csvlink,
             userId: user.id
         }
     })
     return {token:generateToken(user.id),file:createdFile}
+}
+
+export async function createScenarioOneFileData() {
+    const user = await createScenarioSignUpOneUser()
+    const file = await fileFactory()
+    const fileData = await fileDataFactory()
+    const createdData = await prisma.fileData.create({
+        data:{...fileData, url:file.csvlink[0]}
+    })
+    return {token:generateToken(user.id),file, userId:user.id, fileDataId:createdData.id}
 }
 
 export async function createScenarioUserWithFileLinksAndFriends () {
@@ -130,9 +137,12 @@ export async function createScenarioUserWithFileLinksAndFriends () {
         data: {
             title: file.title,
             description: file.description,
-            csvlink: file.csvlink,
             userId: user.id
         }
+    })
+    const fileData = await fileDataFactory()
+    await prisma.fileData.create({
+        data:{...fileData, url:file.csvlink[0]}
     })
     let keywordIds = []
     let linkKeywordIds = []
@@ -159,4 +169,43 @@ export async function createScenarioUserWithFileLinksAndFriends () {
         linkKeywordIds,
         friendId:friend.id
     }
+}
+
+export async function createScenarioFileWithKeywordAndData () {
+    const user = await createScenarioSignUpOneUser()
+    const file = await fileFactory()
+    const createdFile = await prisma.files.create({
+        data: {
+            title: file.title,
+            description: file.description,
+            userId: user.id
+        }
+    })
+    const fileData = await fileDataFactory()
+    await prisma.fileData.create({
+        data:{...fileData, url:file.csvlink[0]}
+    })
+    let keywordIds = []
+    let linkKeywordIds = []
+    
+    for(let i=0; i<file.keywords.length; i++) {
+        const createdKeyword = await prisma.keywords.create({
+            data:{name:file.keywords[i]}
+        })
+        keywordIds.push(createdKeyword.id)
+        const linkFileKey = await prisma.filesKeywords.create({
+            data:{fileId:createdFile.id,keywordId:createdKeyword.id}
+        })
+        linkKeywordIds.push(linkFileKey.id)
+    }
+
+    return {
+        token:generateToken(user.id),
+        userId:user.id,
+        fileId: createdFile.id,
+        keywordIds,
+        linkKeywordIds,
+        urls:file.csvlink
+    }
+
 }

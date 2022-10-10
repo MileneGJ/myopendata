@@ -4,8 +4,7 @@ import { IAWSFile } from "../types/generalTypes";
 
 export async function uploadNewFile (req:Request, res:Response) {
     const file = req.file
-    const {fileId} = req.params
-    const uploadedFile = await fileDataService.uploadFile(file as IAWSFile,Number(fileId))
+    const uploadedFile = await fileDataService.uploadFile(file as IAWSFile)
     res.status(200).send(uploadedFile)
 }
 

@@ -28,8 +28,10 @@ model Files {
   users Users @relation(fields: [userId], references: [id])
   userId Int
   filesKeywords FilesKeywords[]
-  csvlink FileData[]
+  csvlink FilesFileData[]
   createdAt DateTime @default(now())
+
+  @@unique([userId,title])
 }
 
 model FileData {
@@ -38,8 +40,16 @@ model FileData {
   name String
   size Int
   url String @unique
-  files Files @relation(fields: [fileId], references: [id])
+  files FilesFileData[]
+  createdAt DateTime @default(now())
+}
+
+model FilesFileData {
+  id Int @id @default(autoincrement())
+  files Files @relation(fields: [fileId],references: [id])
+  filedata FileData @relation(fields: [dataId],references: [id])
   fileId Int
+  dataId Int @unique
   createdAt DateTime @default(now())
 }
 

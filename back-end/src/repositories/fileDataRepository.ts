@@ -10,17 +10,27 @@ export async function deleteOne(id:number) {
     await prisma.fileData.delete({where:{id}})
 }
 
-export async function deleteFromFile(fileId:number) {
-    await prisma.fileData.deleteMany({where:{fileId}})
-}
-
-export async function deleteFromFileFromUser(userId:number) {
+export async function deleteByIds (idArray:number[]) {
     await prisma.fileData.deleteMany({
         where:{
-            files:{
-                userId
+            id:{
+                in:idArray
             }
-    }})
+        }
+    })
+}
+
+export async function findOrphans () {
+    return await prisma.fileData.findMany({
+        where:{
+            files:{
+                none:{}
+            }
+        },
+        select:{
+            id:true
+        }
+    })
 }
 
 export async function findById(id:number) {
@@ -28,5 +38,5 @@ export async function findById(id:number) {
 }
 
 export async function findByUrl(url:string) {
-    return await prisma.fileData.findMany({where:{url}})
+    return await prisma.fileData.findFirst({where:{url}})
 }

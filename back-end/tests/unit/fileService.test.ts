@@ -2,6 +2,7 @@ import * as filesRepository from '../../src/repositories/filesRepository'
 import * as fileService from '../../src/services/fileServices'
 import * as userService from '../../src/services/userServices'
 import * as keywordService from '../../src/services/keywordServices'
+import * as fileDataService from '../../src/services/fileDataServices'
 import fileFactory from '../factories/fileFactory';
 import idFactory from '../factories/idFactory';
 import fileListFactory from '../factories/fileListFactory';
@@ -18,6 +19,7 @@ describe('Testing create function',()=>{
         jest.spyOn(userService,'verifyIdExists').mockImplementation(():any=>true)
         jest.spyOn(filesRepository,'insert').mockImplementation(():any=>createdFile)
         jest.spyOn(keywordService,'linkKeywordsToFile').mockImplementation(():any=>{})
+        jest.spyOn(fileDataService,'updateLinksWithFile').mockImplementation(():any=>{})
 
         const file = await fileFactory()
         const userId = await idFactory()
@@ -30,7 +32,7 @@ describe('Testing create function',()=>{
             createdAt: new Date
         }
 
-        jest.spyOn(filesRepository,'findByLink').mockImplementationOnce(():any=>{})
+        jest.spyOn(filesRepository,'findByTitleAndUser').mockImplementationOnce(():any=>{})
 
         const result = fileService.create(file,userId)
 
@@ -39,10 +41,10 @@ describe('Testing create function',()=>{
         expect(keywordService.linkKeywordsToFile).toBeCalled()
     })
 
-    it('Returns 409 when file was already posted',async()=>{
+    it('Returns 409 when file title was already posted by user',async()=>{
         const file = await fileFactory()
         const userId = await idFactory()
-        const expectedError = {type: "conflict", message: "File link was already posted"}
+        const expectedError = {type: "conflict", message: "File title was already posted by this user"}
         const createdFile = {
             id:1,
             title: file.title,
@@ -52,7 +54,7 @@ describe('Testing create function',()=>{
             createdAt: new Date
         }
         
-        jest.spyOn(filesRepository,'findByLink').mockImplementationOnce(():any=>createdFile)
+        jest.spyOn(filesRepository,'findByTitleAndUser').mockImplementationOnce(():any=>createdFile)
 
         const result = fileService.create(file,userId)
 
@@ -67,13 +69,12 @@ describe('Testing getFiles function',()=>{
 
     it('Returns files ordered by user if user is provided',async()=>{
         const fileList = await fileListFactory(5)
-        const keywordsFileList = fileList.map(f=>({filesKeywords:[{files:f}]}))
         const user = await wordFactory()
         const keyword = undefined
         const title = undefined
         const userId = await idFactory()
         jest.spyOn(filesRepository,'findAll').mockImplementationOnce(():any=>fileList)
-        jest.spyOn(filesRepository,'findByKeyword').mockImplementationOnce(():any=>keywordsFileList)
+        jest.spyOn(filesRepository,'findByKeyword').mockImplementationOnce(():any=>fileList)
         jest.spyOn(filesRepository,'findByTitle').mockImplementationOnce(():any=>fileList)
         jest.spyOn(filesRepository,'findByUser').mockImplementationOnce(():any=>fileList)
 
@@ -88,13 +89,12 @@ describe('Testing getFiles function',()=>{
 
     it('Returns files ordered by title if title is provided',async()=>{
         const fileList = await fileListFactory(5)
-        const keywordsFileList = fileList.map(f=>({filesKeywords:[{files:f}]}))
         const user = undefined
         const keyword = undefined
         const title = await wordFactory()
         const userId = await idFactory()
         jest.spyOn(filesRepository,'findAll').mockImplementationOnce(():any=>fileList)
-        jest.spyOn(filesRepository,'findByKeyword').mockImplementationOnce(():any=>keywordsFileList)
+        jest.spyOn(filesRepository,'findByKeyword').mockImplementationOnce(():any=>fileList)
         jest.spyOn(filesRepository,'findByTitle').mockImplementationOnce(():any=>fileList)
         jest.spyOn(filesRepository,'findByUser').mockImplementationOnce(():any=>fileList)
 
@@ -108,13 +108,12 @@ describe('Testing getFiles function',()=>{
 
     it('Returns files ordered by keyword if keyword is provided',async()=>{
         const fileList = await fileListFactory(5)
-        const keywordsFileList = fileList.map(f=>({filesKeywords:[{files:f}]}))
         const user = undefined
         const keyword = await wordFactory()
         const title = undefined
         const userId = await idFactory()
         jest.spyOn(filesRepository,'findAll').mockImplementationOnce(():any=>fileList)
-        jest.spyOn(filesRepository,'findByKeyword').mockImplementationOnce(():any=>keywordsFileList)
+        jest.spyOn(filesRepository,'findByKeyword').mockImplementationOnce(():any=>fileList)
         jest.spyOn(filesRepository,'findByTitle').mockImplementationOnce(():any=>fileList)
         jest.spyOn(filesRepository,'findByUser').mockImplementationOnce(():any=>fileList)
 
@@ -164,13 +163,12 @@ describe('Testing getFiles function',()=>{
 
     it('Returns all files if no search queries are provided',async()=>{
         const fileList = await fileListFactory(5)
-        const keywordsFileList = fileList.map(f=>({filesKeywords:[{files:f}]}))
         const user = undefined
         const keyword = undefined
         const title = undefined
         const userId = await idFactory()
         jest.spyOn(filesRepository,'findAll').mockImplementationOnce(():any=>fileList)
-        jest.spyOn(filesRepository,'findByKeyword').mockImplementationOnce(():any=>keywordsFileList)
+        jest.spyOn(filesRepository,'findByKeyword').mockImplementationOnce(():any=>fileList)
         jest.spyOn(filesRepository,'findByTitle').mockImplementationOnce(():any=>fileList)
         jest.spyOn(filesRepository,'findByUser').mockImplementationOnce(():any=>fileList)
 
@@ -213,6 +211,44 @@ describe('Testing getOneFile function',()=>{
         const result = fileService.getOneFile(userId,id)
 
         await expect(result).rejects.toEqual(expectedError)
+    })
+
+})
+
+describe('Testing deleteOneFile function',()=>{
+
+    it('Deletes file and its relations when file id exists',async()=>{
+        const file = await fileFactory()
+        const id = await idFactory()
+        const userId = await idFactory()
+
+        jest.spyOn(fileDataService,'deleteFileDataFromFile').mockImplementation(():any=>{})
+        jest.spyOn(keywordService,'deleteKeywordsFromFiles').mockImplementation(():any=>{})
+        jest.spyOn(filesRepository,'deleteOne').mockImplementation(():any=>{})
+
+        jest.spyOn(filesRepository,'findByIdAndUserId').mockImplementationOnce(():any=>file)
+
+        const result = fileService.deleteOneFile(id,userId)
+
+        await expect(result).resolves.toBeFalsy()
+        expect(filesRepository.deleteOne).toBeCalled()
+        expect(fileDataService.deleteFileDataFromFile).toBeCalled()
+        expect(keywordService.deleteKeywordsFromFiles).toBeCalled()
+    })
+
+    it('Returns 404 when file id is not found',async()=>{
+        const id = await idFactory()
+        const userId = await idFactory()
+        const expectedError = {type: "not_found", message: "No files were found with this id"}
+
+        jest.spyOn(filesRepository,'findByIdAndUserId').mockImplementationOnce(():any=>{})
+
+        const result = fileService.deleteOneFile(id,userId)
+
+        await expect(result).rejects.toEqual(expectedError)
+        expect(filesRepository.deleteOne).not.toBeCalled()
+        expect(fileDataService.deleteFileDataFromFile).not.toBeCalled()
+        expect(keywordService.deleteKeywordsFromFiles).not.toBeCalled()
     })
 
 })

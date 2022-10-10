@@ -13,16 +13,15 @@ export async function deleteFromUserId(userId:number) {
     await prisma.files.deleteMany({where:{userId}})
 }
 
-export async function findByLink(csvlink: string): Promise<IFileDB> {
-    const files = await prisma.fileData.findFirst({ 
+export async function findByTitleAndUser(title: string, userId:number): Promise<IFileDB> {
+    const files = await prisma.files.findFirst({ 
         where: { 
-            url:csvlink
-         },
-         select:{
-             files:true
-         }
-         })
-    return files?.files as IFileDB
+            AND:[
+                {title},
+                {userId}
+            ]
+         }})
+    return files as IFileDB
 }
 
 export async function findByUser(user: string): Promise<IFileReturnDB[]> {
@@ -41,7 +40,16 @@ export async function findByUser(user: string): Promise<IFileReturnDB[]> {
             id: true,
             title: true,
             description: true,
-            csvlink: true,
+            csvlink: {
+                select:{
+                    filedata:{
+                        select:{
+                            name:true,
+                            url:true
+                        }
+                    }
+                }
+            },
             users: {
                 select: {
                     name: true
@@ -81,7 +89,16 @@ export async function findByKeyword(keyword: string): Promise<IFileReturnDB[]> {
                             id: true,
                             title: true,
                             description: true,
-                            csvlink: true,
+                            csvlink: {
+                                select:{
+                                    filedata:{
+                                        select:{
+                                            name:true,
+                                            url:true
+                                        }
+                                    }
+                                }
+                            },
                             users: {
                                 select: {
                                     name: true
@@ -120,7 +137,16 @@ export async function findByTitle(title: string): Promise<IFileReturnDB[]> {
             id:true,
             title:true,
             description:true,
-            csvlink:true,
+            csvlink:{
+                select:{
+                    filedata:{
+                        select:{
+                            name:true,
+                            url:true
+                        }
+                    }
+                }
+            },
             users:{
                 select:{
                     name:true
@@ -148,7 +174,16 @@ export async function findAll(): Promise<IFileReturnDB[]> {
             id:true,
             title:true,
             description:true,
-            csvlink:true,
+            csvlink:{
+                select:{
+                    filedata:{
+                        select:{
+                            name:true,
+                            url:true
+                        }
+                    }
+                }
+            },
             users:{
                 select:{
                     name:true
@@ -177,7 +212,16 @@ export async function findById(id: number): Promise<IFileReturnDB> {
             id:true,
             title:true,
             description:true,
-            csvlink:true,
+            csvlink:{
+                select:{
+                    filedata:{
+                        select:{
+                            name:true,
+                            url:true
+                        }
+                    }
+                }
+            },
             users:{
                 select:{
                     name:true
@@ -195,4 +239,8 @@ export async function findById(id: number): Promise<IFileReturnDB> {
         }
     })
     return file as IFileReturnDB
+}
+
+export async function findByIdAndUserId (id:number, userId:number) {
+    return await prisma.files.findFirst({where:{AND:[{id},{userId}]}})
 }

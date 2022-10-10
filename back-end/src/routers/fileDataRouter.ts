@@ -7,7 +7,8 @@ import tokenVerification from "../middlewares/tokenVerification";
 const fileDataRouter = Router()
 
 fileDataRouter.use(tokenVerification)
-fileDataRouter.post('/filedata/:fileId',multer({dest: uploadPath,storage:storageTypes.s3,fileFilter:fileFilter}).single('file'),fileDataController.uploadNewFile)
+
+fileDataRouter.post('/filedata',multer({dest: uploadPath,storage:storageTypes.s3,fileFilter:fileFilter}).single('file'),fileDataController.uploadNewFile)
 fileDataRouter.delete('/filedata/:id',fileDataController.deleteOneFileData)
 
 export default fileDataRouter
