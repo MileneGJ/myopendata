@@ -32,8 +32,6 @@ export default function CreateFilePage() {
 
     async function createFile(e) {
         e.preventDefault()
-        console.log(newFile)
-        alert()
         const rawKeywords = newFile.keywords.toLowerCase().split(';')
         const keywords = rawKeywords.map(k => {
             let newK = k
