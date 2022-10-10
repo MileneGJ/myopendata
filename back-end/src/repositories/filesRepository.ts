@@ -1,9 +1,12 @@
 import prisma from "../database/database";
 import { IFileDB, IFileReturnDB, TFileInsertDB } from "../types/fileTypes";
-import { IKeywordReturnDB } from "../types/keywordTypes";
 
 export async function insert(file: TFileInsertDB) {
     return await prisma.files.create({ data: file })
+}
+
+export async function deleteOne (id:number) {
+    await prisma.files.delete({where:{id}})
 }
 
 export async function deleteFromUserId(userId:number) {
@@ -62,8 +65,8 @@ export async function findByUser(user: string): Promise<IFileReturnDB[]> {
     })
 }
 
-export async function findByKeyword(keyword: string): Promise<IKeywordReturnDB[]> {
-    return await prisma.keywords.findMany({
+export async function findByKeyword(keyword: string): Promise<IFileReturnDB[]> {
+    const keywordOutput = await prisma.keywords.findMany({
         where: {
             name: {
                 contains: keyword,
@@ -102,6 +105,7 @@ export async function findByKeyword(keyword: string): Promise<IKeywordReturnDB[]
             name: 'asc'
         }
     })
+    return keywordOutput?.map(k=>k?.filesKeywords[0].files)
 }
 
 export async function findByTitle(title: string): Promise<IFileReturnDB[]> {

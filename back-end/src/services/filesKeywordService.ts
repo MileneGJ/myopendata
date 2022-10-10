@@ -10,3 +10,7 @@ export async function verifyFileKeywordLink (fileId:number, keywordId:number) {
 export async function deleteLinksFromFilesFromUser(userId:number) {
     await filesKeywordsRepository.deleteFromFileFromUser(userId)
 }
+
+export async function deleteLinksFromFiles(fileId:number) {
+    await filesKeywordsRepository.deleteFromFile(fileId)
+}

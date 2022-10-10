@@ -17,3 +17,7 @@ export async function deleteFromFileFromUser(userId:number) {
         }
     })    
 }
+
+export async function deleteFromFile(fileId:number) {
+    await prisma.filesKeywords.deleteMany({where:{fileId}})
+}

@@ -22,3 +22,7 @@ export async function returnOneFile (req:Request, res:Response) {
     const file = await fileService.getOneFile(userId,Number(id))
     res.status(200).send(file)
 }
+
+export async function deleteOneFile (req:Request, res:Response) {
+    
+}

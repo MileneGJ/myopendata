@@ -1,8 +1,8 @@
 import * as filesRepository from '../repositories/filesRepository'
 import * as userService from '../services/userServices'
 import * as keywordService from '../services/keywordServices'
+import * as fileDataService from '../services/fileDataServices'
 import { IFileParams, IFileBody, IFileReturnDB } from '../types/fileTypes';
-import { IKeywordReturnDB } from '../types/keywordTypes';
 import { conflictError, notFoundError } from '../utils/errorUtils';
 
 export async function create(file: IFileBody, userId: number) {
@@ -35,31 +35,23 @@ export async function getFiles({
     await userService.verifyIdExists(userId)
     if (keyword) {
         const rawSearch = await filesRepository.findByKeyword(keyword as string)
-        return formatKeywordOutput(rawSearch as IKeywordReturnDB[])
+        return formatArrayOutput(rawSearch)
     } else if (title) {
         const rawSearch = await filesRepository.findByTitle(title)
-        return formatFileOutput(rawSearch)
+        return formatArrayOutput(rawSearch)
     } else if (user) {
         const rawSearch = await filesRepository.findByUser(user)
-        return formatFileOutput(rawSearch)
+        return formatArrayOutput(rawSearch)
     } else {
         const rawSearch = await filesRepository.findAll()
-        return formatFileOutput(rawSearch)
+        return formatArrayOutput(rawSearch)
     }
 }
 
 export async function getOneFile(userId: number, fileId: number) {
     await userService.verifyIdExists(userId)
     const file = await verifyFileExists(fileId)
-    const keywords = file.filesKeywords.map(fk=>fk.keywords.name)
-    return ({
-        id: file.id,
-        title: file.title,
-        description: file.description,
-        csvlink: file.csvlink,
-        author: file.users.name,
-        keywords
-    })
+    return formatFileOutput(file)
 }
 
 async function verifyFileExists(fileId: number) {
@@ -70,42 +62,39 @@ async function verifyFileExists(fileId: number) {
     return file
 }
 
-function formatKeywordOutput(fileArray: IKeywordReturnDB[]) {
+function formatArrayOutput(fileArray: IFileReturnDB[]) {
     if (fileArray.length) {
-        return fileArray.map(k => {
-            const f = k.filesKeywords[0].files
-            const keywords = f.filesKeywords.map(fk=>fk.keywords.name)
-            return ({
-                id: f.id,
-                title: f.title,
-                description: f.description,
-                csvlink: f.csvlink,
-                author: f.users.name,
-                keywords
-            })
+        return fileArray.map(f => {
+            return formatFileOutput(f)
         })
     }
     return []
 }
 
-function formatFileOutput(fileArray: IFileReturnDB[]) {
-    if (fileArray.length) {
-        return fileArray.map(f => {
-            const keywords = f.filesKeywords.map(fk=>fk.keywords.name)
-            return ({
-                id: f.id,
-                title: f.title,
-                description: f.description,
-                csvlink: f.csvlink,
-                author: f.users.name,
-                keywords
-            })
+function formatFileOutput(file: IFileReturnDB) {
+    if (file.id) {
+        const keywords = file.filesKeywords.map(fk => fk.keywords.name)
+        return ({
+            id: file.id,
+            title: file.title,
+            description: file.description,
+            csvlink: file.csvlink,
+            author: file.users.name,
+            keywords
         })
     }
-    return []
+    return {}
 }
 
 export async function deleteFilesFromUserId(userId: number) {
+    await fileDataService.deleteFileDataFromFileFromUser(userId)
     await keywordService.deleteKeywordsFromFilesFromUser(userId)
     await filesRepository.deleteFromUserId(userId)
+}
+
+export async function deleteOneFile(fileId:number) {
+    await verifyFileExists(fileId)
+    await fileDataService.deleteFileDataFromFile(fileId)
+    await keywordService.deleteKeywordsFromFilesFromUser(fileId)
+    await filesRepository.deleteOne(fileId)
 }
