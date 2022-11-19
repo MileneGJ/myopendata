@@ -1,20 +1,15 @@
 import { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { getFileById } from "../../services/files";
 import errorHandler from "../../utils/errorHandler";
 import PageTemplate from "../../components/PageTemplate";
 
 export default function FilePage() {
   const [file, setFile] = useState(null);
-  const navigate = useNavigate();
   const { id } = useParams();
   const token = localStorage.getItem("token");
 
   useEffect(() => {
-    if (!token) {
-      alert("User not logged in");
-      navigate("/");
-    }
     async function getFileData() {
       try {
         const response = await getFileById(token, id);

@@ -12,25 +12,20 @@ export default function UserMenu() {
   const token = localStorage.getItem("token");
 
   useEffect(() => {
-    if (!token) {
-      alert("User not logged in");
-      navigate("/");
-    } else {
-      async function getName() {
-        try {
-          const data = await getUserName(token);
-          setUserName(data.name);
-        } catch (error) {
-          errorHandler(error);
-        }
+    async function getName() {
+      try {
+        const data = await getUserName(token);
+        setUserName(data.name);
+      } catch (error) {
+        errorHandler(error);
       }
-      getName();
     }
+    getName();
   }, []);
 
   function deleteSession() {
     localStorage.removeItem("token");
-    navigate("/");
+    navigate("/signin");
   }
 
   async function deleteAccount() {

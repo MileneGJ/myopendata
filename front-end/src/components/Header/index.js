@@ -2,7 +2,7 @@ import logo from "../../assets/logo-no-background.png";
 import HeaderSpan from "./HeaderSpan";
 import { useNavigate } from "react-router-dom";
 import SearchBar from "../SearchBar";
-import UserMenu from "./UserMenu";
+import UserMenu from "../UserMenu";
 
 export default function Header() {
   const navigate = useNavigate();

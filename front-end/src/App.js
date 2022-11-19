@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import SignIn from "./pages/Auth/SignIn";
 import SignUp from "./pages/Auth/SignUp";
 import HomePage from "./pages/HomePage";
@@ -9,15 +9,51 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<SignIn />} />
-        <Route path="/home" element={<HomePage />} />
-        <Route path="/file/:id" element={<FilePage />} />
-        <Route path="/new-file" element={<CreateFilePage />} />
-        <Route path="/signup" element={<SignUp />} />
-        <Route path="/search" element={<HomePage />} />
+        <Route path="/signin" element={<SignIn />} />
+        <Route path="/" element={<SignUp />} />
+        <Route
+          path="/home"
+          element={
+            <ProtectedRouteGuard>
+              <HomePage />
+            </ProtectedRouteGuard>
+          }
+        />
+        <Route
+          path="/file/:id"
+          element={
+            <ProtectedRouteGuard>
+              <FilePage />
+            </ProtectedRouteGuard>
+          }
+        />
+        <Route
+          path="/new-file"
+          element={
+            <ProtectedRouteGuard>
+              <CreateFilePage />
+            </ProtectedRouteGuard>
+          }
+        />
+        <Route
+          path="/search"
+          element={
+            <ProtectedRouteGuard>
+              <HomePage />
+            </ProtectedRouteGuard>
+          }
+        />
       </Routes>
     </BrowserRouter>
   );
 }
+function ProtectedRouteGuard({ children }) {
+  const token = localStorage.getItem("token");
 
+  if (!token) {
+    return <Navigate to="/signin" />;
+  }
+
+  return <>{children}</>;
+}
 export default App;

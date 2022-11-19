@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import { listAll, listByField } from "../../services/files";
 import errorHandler from "../../utils/errorHandler";
-import File from "../../components/FileUpload/File";
-import UploadButton from "../../components/FileUpload/UploadButton";
+import File from "../../components/File";
+import UploadButton from "../../components/File/UploadButton";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import PageTemplate from "../../components/PageTemplate";
 
@@ -13,28 +13,23 @@ export default function HomePage() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (!token) {
-      alert("User not logged in");
-      navigate("/");
-    } else {
-      async function returnList() {
-        try {
-          if (search.length > 0) {
-            const searchString = search.replace("?", "").split("=");
-            const field = searchString[0];
-            const content = searchString[1];
-            const response = await listByField(token, { field, content });
-            setFileList(response);
-          } else {
-            const response = await listAll(token);
-            setFileList(response);
-          }
-        } catch (error) {
-          errorHandler(error);
+    async function returnList() {
+      try {
+        if (search.length > 0) {
+          const searchString = search.replace("?", "").split("=");
+          const field = searchString[0];
+          const content = searchString[1];
+          const response = await listByField(token, { field, content });
+          setFileList(response);
+        } else {
+          const response = await listAll(token);
+          setFileList(response);
         }
+      } catch (error) {
+        errorHandler(error);
       }
-      returnList();
     }
+    returnList();
   }, [search, token]);
 
   return (

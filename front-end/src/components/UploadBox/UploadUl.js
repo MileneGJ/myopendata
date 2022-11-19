@@ -9,8 +9,10 @@ const UploadUl = styled.ul`
     color: #2b3f51;
     justify-content: space-between;
     align-items: center;
-    div:first-child {
+    > div {
       display: flex;
+    }
+    div:first-child {
       flex-direction: column;
       width: 100%;
     }

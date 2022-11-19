@@ -11,7 +11,7 @@ export default function SearchBar() {
 
   function goToSearch(e) {
     e.preventDefault();
-    navigate(`/search?${search.field}=${search.content}`);
+    navigate(`/dashboard/search?${search.field}=${search.content}`);
   }
 
   return (
