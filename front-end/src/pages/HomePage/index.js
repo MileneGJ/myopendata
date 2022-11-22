@@ -39,6 +39,7 @@ export default function HomePage() {
           <>
             {fileList.map((f, index) => (
               <File
+                showAuthor={true}
                 key={index}
                 id={f.id}
                 title={f.title}

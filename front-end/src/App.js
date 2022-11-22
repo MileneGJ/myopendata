@@ -4,47 +4,59 @@ import SignUp from "./pages/Auth/SignUp";
 import HomePage from "./pages/HomePage";
 import FilePage from "./pages/FilePage";
 import CreateFilePage from "./pages/CreateFilePage";
+import AuthorPage from "./pages/AuthorPage";
+import { UserProvider } from "./contexts/UserContext";
 
 function App() {
   return (
-    <BrowserRouter>
-      <Routes>
-        <Route path="/signin" element={<SignIn />} />
-        <Route path="/" element={<SignUp />} />
-        <Route
-          path="/home"
-          element={
-            <ProtectedRouteGuard>
-              <HomePage />
-            </ProtectedRouteGuard>
-          }
-        />
-        <Route
-          path="/file/:id"
-          element={
-            <ProtectedRouteGuard>
-              <FilePage />
-            </ProtectedRouteGuard>
-          }
-        />
-        <Route
-          path="/new-file"
-          element={
-            <ProtectedRouteGuard>
-              <CreateFilePage />
-            </ProtectedRouteGuard>
-          }
-        />
-        <Route
-          path="/search"
-          element={
-            <ProtectedRouteGuard>
-              <HomePage />
-            </ProtectedRouteGuard>
-          }
-        />
-      </Routes>
-    </BrowserRouter>
+    <UserProvider>
+      <BrowserRouter>
+        <Routes>
+          <Route path="/signin" element={<SignIn />} />
+          <Route path="/" element={<SignUp />} />
+          <Route
+            path="/home"
+            element={
+              <ProtectedRouteGuard>
+                <HomePage />
+              </ProtectedRouteGuard>
+            }
+          />
+          <Route
+            path="/file/:id"
+            element={
+              <ProtectedRouteGuard>
+                <FilePage />
+              </ProtectedRouteGuard>
+            }
+          />
+          <Route
+            path="/new-file"
+            element={
+              <ProtectedRouteGuard>
+                <CreateFilePage />
+              </ProtectedRouteGuard>
+            }
+          />
+          <Route
+            path="/search"
+            element={
+              <ProtectedRouteGuard>
+                <HomePage />
+              </ProtectedRouteGuard>
+            }
+          />
+          <Route
+            path="/author/:authorId"
+            element={
+              <ProtectedRouteGuard>
+                <AuthorPage />
+              </ProtectedRouteGuard>
+            }
+          />
+        </Routes>
+      </BrowserRouter>
+    </UserProvider>
   );
 }
 function ProtectedRouteGuard({ children }) {

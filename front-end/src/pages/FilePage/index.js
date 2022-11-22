@@ -20,7 +20,7 @@ export default function FilePage() {
       }
     }
     getFileData();
-  }, [token]);
+  }, [token, id]);
   return (
     <PageTemplate header={true} footer={true} HaveClass="fileDescription">
       {file ? (

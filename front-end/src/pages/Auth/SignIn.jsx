@@ -4,8 +4,11 @@ import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { signin } from "../../services/auth";
 import errorHandler from "../../utils/errorHandler";
+import { useContext } from "react";
+import UserContext from "../../contexts/UserContext";
 
 export default function SignIn() {
+  const { setUserData } = useContext(UserContext);
   const [authUser, setAuthUser] = useState({
     email: "",
     password: "",
@@ -17,6 +20,7 @@ export default function SignIn() {
     try {
       const promise = await signin(authUser);
       localStorage.setItem("token", promise.data.token);
+      //setUserData(promise.data.user);
       navigate("/home");
     } catch (error) {
       errorHandler(error);
