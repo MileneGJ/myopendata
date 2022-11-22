@@ -37,35 +37,7 @@ export async function findByUser(user: string): Promise<IFileReturnDB[]> {
         },
       },
     },
-    select: {
-      id: true,
-      title: true,
-      description: true,
-      csvlink: {
-        select: {
-          filedata: {
-            select: {
-              name: true,
-              url: true,
-            },
-          },
-        },
-      },
-      users: {
-        select: {
-          name: true,
-        },
-      },
-      filesKeywords: {
-        select: {
-          keywords: {
-            select: {
-              name: true,
-            },
-          },
-        },
-      },
-    },
+    select: selectOptions,
     orderBy: {
       users: {
         name: "asc",
@@ -86,35 +58,7 @@ export async function findByKeyword(keyword: string): Promise<IFileReturnDB[]> {
       filesKeywords: {
         select: {
           files: {
-            select: {
-              id: true,
-              title: true,
-              description: true,
-              csvlink: {
-                select: {
-                  filedata: {
-                    select: {
-                      name: true,
-                      url: true,
-                    },
-                  },
-                },
-              },
-              users: {
-                select: {
-                  name: true,
-                },
-              },
-              filesKeywords: {
-                select: {
-                  keywords: {
-                    select: {
-                      name: true,
-                    },
-                  },
-                },
-              },
-            },
+            select: selectOptions,
           },
         },
       },
@@ -135,72 +79,28 @@ export async function findByTitle(title: string): Promise<IFileReturnDB[]> {
         mode: "insensitive",
       },
     },
-    select: {
-      id: true,
-      title: true,
-      description: true,
-      csvlink: {
-        select: {
-          filedata: {
-            select: {
-              name: true,
-              url: true,
-            },
-          },
-        },
-      },
-      users: {
-        select: {
-          name: true,
-        },
-      },
-      filesKeywords: {
-        select: {
-          keywords: {
-            select: {
-              name: true,
-            },
-          },
-        },
-      },
-    },
+    select: selectOptions,
     orderBy: {
       title: "asc",
     },
   });
 }
 
+export async function findByUserId(userId: number): Promise<IFileReturnDB[]> {
+  return await prisma.files.findMany({
+    where: {
+      userId,
+    },
+    select: selectOptions,
+    orderBy: {
+      createdAt: "desc",
+    },
+  });
+}
+
 export async function findAll(): Promise<IFileReturnDB[]> {
   return await prisma.files.findMany({
-    select: {
-      id: true,
-      title: true,
-      description: true,
-      csvlink: {
-        select: {
-          filedata: {
-            select: {
-              name: true,
-              url: true,
-            },
-          },
-        },
-      },
-      users: {
-        select: {
-          name: true,
-        },
-      },
-      filesKeywords: {
-        select: {
-          keywords: {
-            select: {
-              name: true,
-            },
-          },
-        },
-      },
-    },
+    select: selectOptions,
     orderBy: {
       createdAt: "desc",
     },
@@ -210,35 +110,7 @@ export async function findAll(): Promise<IFileReturnDB[]> {
 export async function findById(id: number): Promise<IFileReturnDB> {
   const file = await prisma.files.findFirst({
     where: { id },
-    select: {
-      id: true,
-      title: true,
-      description: true,
-      csvlink: {
-        select: {
-          filedata: {
-            select: {
-              name: true,
-              url: true,
-            },
-          },
-        },
-      },
-      users: {
-        select: {
-          name: true,
-        },
-      },
-      filesKeywords: {
-        select: {
-          keywords: {
-            select: {
-              name: true,
-            },
-          },
-        },
-      },
-    },
+    select: selectOptions,
   });
   return file as IFileReturnDB;
 }
@@ -246,3 +118,34 @@ export async function findById(id: number): Promise<IFileReturnDB> {
 export async function findByIdAndUserId(id: number, userId: number) {
   return await prisma.files.findFirst({ where: { AND: [{ id }, { userId }] } });
 }
+
+const selectOptions = {
+  id: true,
+  title: true,
+  description: true,
+  csvlink: {
+    select: {
+      filedata: {
+        select: {
+          name: true,
+          url: true,
+        },
+      },
+    },
+  },
+  users: {
+    select: {
+      id: true,
+      name: true,
+    },
+  },
+  filesKeywords: {
+    select: {
+      keywords: {
+        select: {
+          name: true,
+        },
+      },
+    },
+  },
+};

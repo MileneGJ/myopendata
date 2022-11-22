@@ -38,7 +38,10 @@ async function validatePassword(password: string) {
 
 export async function authenticate(user: TUserLogin) {
   const foundUser = await verifyAuthentication(user);
-  return generateToken(foundUser.id);
+  return {
+    token: generateToken(foundUser.id),
+    user: { id: foundUser.id, name: foundUser.name },
+  };
 }
 
 async function verifyAuthentication(user: TUserLogin) {
