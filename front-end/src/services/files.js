@@ -28,6 +28,12 @@ export async function create(token, data) {
   return response.data;
 }
 
+export async function deleteFile(token, id) {
+  const config = createConfig(token);
+  const response = await api.delete(`/files/${id}`, config);
+  return response.data;
+}
+
 export async function getFileById(token, id) {
   const config = createConfig(token);
   const response = await api.get(`/files/${id}`, config);

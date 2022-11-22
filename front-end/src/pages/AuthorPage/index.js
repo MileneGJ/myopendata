@@ -4,7 +4,7 @@ import File from "../../components/File";
 import UploadButton from "../../components/File/UploadButton";
 import PageTemplate from "../../components/PageTemplate";
 import UserContext from "../../contexts/UserContext";
-import { listByAuthor } from "../../services/files";
+import { listByAuthor, deleteFile } from "../../services/files";
 import { getUserNameById } from "../../services/users";
 import errorHandler from "../../utils/errorHandler";
 
@@ -29,6 +29,16 @@ export default function AuthorPage() {
     }
     getUserFiles();
   }, [token, authorId]);
+
+  async function deleteOneFile(id) {
+    try {
+      await deleteFile(token, id);
+      setFileList(() => fileList.filter((f) => f.id !== id));
+    } catch (error) {
+      errorHandler(error);
+    }
+  }
+
   return (
     <PageTemplate header={true} footer={true}>
       <h2>{authorName}'s activity</h2>
@@ -39,7 +49,13 @@ export default function AuthorPage() {
         fileList.length > 0 ? (
           <>
             {fileList.map((f, index) => (
-              <File showAuthor={false} key={index} file={f} />
+              <File
+                showAuthor={false}
+                showDelete={userData.id === parseInt(authorId)}
+                onDelete={() => deleteOneFile(f.id)}
+                key={index}
+                file={f}
+              />
             ))}
             {userData.id === parseInt(authorId) && (
               <UploadButton onClick={() => navigate("/new-file")}>

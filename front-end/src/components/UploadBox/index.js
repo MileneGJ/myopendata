@@ -35,7 +35,6 @@ export default class UploadBox extends Component {
 
   render() {
     const { uploadedFiles } = this.state;
-    const { newFile, setNewFile } = this.props;
     const token = localStorage.getItem("token");
 
     const deleteFileItem = async (id) => {
@@ -53,7 +52,6 @@ export default class UploadBox extends Component {
         name: file.name,
         readableSize: filesize(file.size),
         progress: 0,
-        preview: URL.createObjectURL(file),
         uploaded: false,
         error: false,
         url: null,
@@ -64,7 +62,7 @@ export default class UploadBox extends Component {
       newUploadedFiles.forEach(processUpload);
     };
 
-    const processUpload = (uploadedFile) => {
+    const processUpload = async (uploadedFile) => {
       const data = new FormData();
       data.append("file", uploadedFile.file, uploadedFile.name);
 
@@ -74,24 +72,18 @@ export default class UploadBox extends Component {
           progress,
         });
       };
-      createFileData(token, data, onUploadProgress)
-        .then((res) => {
-          this.updateFile(uploadedFile.id, {
-            uploaded: true,
-            id: res.id,
-            url: res.url,
-          });
-          setNewFile({
-            ...newFile,
-            csvlink: [...newFile.csvlink, res.url],
-          });
-          console.log(newFile);
-        })
-        .catch(() => {
-          this.updateFile(uploadedFile.id, {
-            error: true,
-          });
+      try {
+        const res = await createFileData(token, data, onUploadProgress);
+        this.updateFile(uploadedFile.id, {
+          uploaded: true,
+          id: res.id,
+          url: res.url,
         });
+      } catch (error) {
+        this.updateFile(uploadedFile.id, {
+          error: true,
+        });
+      }
     };
 
     return (

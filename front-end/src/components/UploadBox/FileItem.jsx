@@ -16,7 +16,7 @@ export default function FileItem({
         <h3>{name}</h3>
         <span>
           <p>{readableSize}</p>
-          {url && <h4 onClick={deleteFileItem}>Excluir</h4>}
+          {url && <h4 onClick={deleteFileItem}>Delete</h4>}
         </span>
       </div>
       <div>

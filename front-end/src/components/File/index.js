@@ -1,9 +1,10 @@
 import { useNavigate } from "react-router-dom";
 import FileSpan from "./FileSpan";
 import UserIcon from "./UserIcon";
+import { MdDelete } from "react-icons/md";
 import FileContainer from "./FileContainer";
 
-export default function File({ showAuthor, file }) {
+export default function File({ showAuthor, showDelete, onDelete, file }) {
   const { id, title, description, author, authorId, keywords } = file;
   const navigate = useNavigate();
 
@@ -22,9 +23,12 @@ export default function File({ showAuthor, file }) {
         </div>
         <div>
           <h2>Keywords:</h2>
-          <p>{keywords.join(", ")}</p>
+          <p>{keywords?.join(", ")}</p>
         </div>
       </FileSpan>
+      {showDelete && (
+        <MdDelete style={{ cursor: "pointer" }} onClick={onDelete} size={24} />
+      )}
     </FileContainer>
   );
 }
