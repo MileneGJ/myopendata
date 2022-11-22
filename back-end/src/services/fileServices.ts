@@ -2,7 +2,12 @@ import * as filesRepository from "../repositories/filesRepository";
 import * as userService from "../services/userServices";
 import * as keywordService from "../services/keywordServices";
 import * as fileDataService from "../services/fileDataServices";
-import { IFileParams, IFileBody, IFileReturnDB } from "../types/fileTypes";
+import {
+  IFileParams,
+  IFileBody,
+  IFileReturnDB,
+  IFileAuthorParams,
+} from "../types/fileTypes";
 import { conflictError, notFoundError } from "../utils/errorUtils";
 
 export async function create(file: IFileBody, userId: number) {
@@ -41,6 +46,12 @@ export async function getFiles({ keyword, title, user, userId }: IFileParams) {
     const rawSearch = await filesRepository.findAll();
     return formatArrayOutput(rawSearch);
   }
+}
+
+export async function getAuthorFiles({ authorId, userId }: IFileAuthorParams) {
+  await userService.verifyIdExists(userId);
+  const rawSearch = await filesRepository.findByUserId(authorId);
+  return formatArrayOutput(rawSearch);
 }
 
 export async function getOneFile(userId: number, fileId: number) {

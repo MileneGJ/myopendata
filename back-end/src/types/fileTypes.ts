@@ -44,3 +44,8 @@ export interface IFileParams {
   user: string | undefined;
   userId: number;
 }
+
+export interface IFileAuthorParams {
+  authorId: number;
+  userId: number;
+}

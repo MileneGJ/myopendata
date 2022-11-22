@@ -16,6 +16,12 @@ export async function listByField(token, search) {
   return response.data;
 }
 
+export async function listByAuthor(token, authorId) {
+  const config = createConfig(token);
+  const response = await api.get(`/files/author/${authorId}`, config);
+  return response.data;
+}
+
 export async function create(token, data) {
   const config = createConfig(token);
   const response = await api.post("/files", data, config);

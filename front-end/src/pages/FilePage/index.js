@@ -14,7 +14,6 @@ export default function FilePage() {
     async function getFileData() {
       try {
         const response = await getFileById(token, id);
-        console.log(response);
         setFile(response);
       } catch (error) {
         errorHandler(error);
@@ -39,7 +38,7 @@ export default function FilePage() {
             ))}
           </p>
           <p
-            style={{ fontWeight: "700" }}
+            style={{ fontWeight: "700", cursor: "pointer" }}
             onClick={() => navigate(`/author/${file.authorId}`)}
           >
             {`Author: ${file.author}`}
