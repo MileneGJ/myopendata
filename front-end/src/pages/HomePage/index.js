@@ -38,15 +38,7 @@ export default function HomePage() {
         fileList.length > 0 ? (
           <>
             {fileList.map((f, index) => (
-              <File
-                showAuthor={true}
-                key={index}
-                id={f.id}
-                title={f.title}
-                description={f.description}
-                author={f.author}
-                keywords={f.keywords}
-              />
+              <File showAuthor={true} key={index} file={f} />
             ))}
             <UploadButton onClick={() => navigate("/new-file")}>
               + Upload a new file

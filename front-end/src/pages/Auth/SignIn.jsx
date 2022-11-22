@@ -20,7 +20,7 @@ export default function SignIn() {
     try {
       const promise = await signin(authUser);
       localStorage.setItem("token", promise.data.token);
-      //setUserData(promise.data.user);
+      setUserData(promise.data.user);
       navigate("/home");
     } catch (error) {
       errorHandler(error);

@@ -36,7 +36,7 @@ export default function UserMenu() {
     <UserContainer onClick={showOptions} visible={appearOptions}>
       <p>{userData.name}</p>
       <UserOptions>
-        <Link to={`/author/${userData.name}`}>My files</Link>
+        <Link to={`/author/${userData.id}`}>My files</Link>
         <p onClick={deleteSession}>Logout</p>
         <p onClick={deleteAccount}>Delete account</p>
       </UserOptions>

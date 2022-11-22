@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { getFileById } from "../../services/files";
 import errorHandler from "../../utils/errorHandler";
 import PageTemplate from "../../components/PageTemplate";
@@ -8,6 +8,7 @@ export default function FilePage() {
   const [file, setFile] = useState(null);
   const { id } = useParams();
   const token = localStorage.getItem("token");
+  const navigate = useNavigate();
 
   useEffect(() => {
     async function getFileData() {
@@ -37,7 +38,12 @@ export default function FilePage() {
               </a>
             ))}
           </p>
-          <p style={{ fontWeight: "700" }}>{`Author: ${file.author}`}</p>
+          <p
+            style={{ fontWeight: "700" }}
+            onClick={() => navigate(`/author/${file.authorId}`)}
+          >
+            {`Author: ${file.author}`}
+          </p>
           <p>{`Keywords: ${file.keywords.join(", ")}`}</p>
         </>
       ) : (

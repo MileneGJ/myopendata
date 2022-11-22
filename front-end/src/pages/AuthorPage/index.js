@@ -31,24 +31,16 @@ export default function AuthorPage() {
   return (
     <PageTemplate header={true} footer={true}>
       <h2>{authorId}'s activity</h2>
-      {userData.id !== authorId && (
+      {userData.id !== parseInt(authorId) && (
         <button>Get in touch on OpenDataChat</button>
       )}
       {fileList ? (
         fileList.length > 0 ? (
           <>
             {fileList.map((f, index) => (
-              <File
-                showAuthor={false}
-                key={index}
-                id={f.id}
-                title={f.title}
-                description={f.description}
-                author={f.author}
-                keywords={f.keywords}
-              />
+              <File showAuthor={false} key={index} file={f} />
             ))}
-            {userData.id === authorId && (
+            {userData.id === parseInt(authorId) && (
               <UploadButton onClick={() => navigate("/new-file")}>
                 + Upload a new file
               </UploadButton>
@@ -57,7 +49,7 @@ export default function AuthorPage() {
         ) : (
           <>
             <h2>There are no files to be shown</h2>
-            {userData.id === authorId && (
+            {userData.id === parseInt(authorId) && (
               <Link to="/new-file">
                 <h2>Upload a new one!</h2>
               </Link>

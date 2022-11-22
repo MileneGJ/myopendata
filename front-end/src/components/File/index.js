@@ -3,20 +3,14 @@ import FileSpan from "./FileSpan";
 import UserIcon from "./UserIcon";
 import FileContainer from "./FileContainer";
 
-export default function File({
-  id,
-  title,
-  description,
-  author,
-  keywords,
-  showAuthor,
-}) {
+export default function File({ showAuthor, file }) {
+  const { id, title, description, author, authorId, keywords } = file;
   const navigate = useNavigate();
 
   return (
     <FileContainer>
       {showAuthor && (
-        <UserIcon onClick={() => navigate(`/author/${author}`)}>
+        <UserIcon onClick={() => navigate(`/author/${authorId}`)}>
           <div>{author[0]}</div>
           <p>{author}</p>
         </UserIcon>
