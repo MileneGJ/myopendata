@@ -3,9 +3,9 @@ import * as fileDataRepository from "../repositories/fileDataRepository";
 import * as filesFileDataService from "../services/filesFileDataServices";
 import { notFoundError } from "../utils/errorUtils";
 
-export async function uploadFile(file: IAWSFile) {
+export async function uploadFile(file: IAWSFile, userId: number) {
   const { originalname: name, key, size, location: url } = file;
-  const infoForUpload = { name, key, size, url };
+  const infoForUpload = { name, key, size, url, userId };
   const updatedFile = await fileDataRepository.upload(infoForUpload);
   return updatedFile;
 }
@@ -53,4 +53,9 @@ async function deleteOrphanData() {
   const orphanData = await fileDataRepository.findOrphans();
   const idArray = orphanData.map((d) => d.id);
   await fileDataRepository.deleteByIds(idArray);
+}
+
+export async function getOrphansFromUser(userId: number) {
+  const orphanData = await fileDataRepository.findOrphansByUserId(userId);
+  return orphanData;
 }

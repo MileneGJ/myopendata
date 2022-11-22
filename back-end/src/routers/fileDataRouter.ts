@@ -1,14 +1,23 @@
-import { Router } from "express"
+import { Router } from "express";
 import multer from "multer";
 import { fileFilter, storageTypes, uploadPath } from "../utils/multerUtils";
-import * as fileDataController from '../controllers/fileDataControllers'
+import * as fileDataController from "../controllers/fileDataControllers";
 import tokenVerification from "../middlewares/tokenVerification";
 
-const fileDataRouter = Router()
+const fileDataRouter = Router();
 
-fileDataRouter.use(tokenVerification)
+fileDataRouter.use(tokenVerification);
 
-fileDataRouter.post('/filedata',multer({dest: uploadPath,storage:storageTypes.s3,fileFilter:fileFilter}).single('file'),fileDataController.uploadNewFile)
-fileDataRouter.delete('/filedata/:id',fileDataController.deleteOneFileData)
+fileDataRouter.post(
+  "/filedata",
+  multer({
+    dest: uploadPath,
+    storage: storageTypes.s3,
+    fileFilter: fileFilter,
+  }).single("file"),
+  fileDataController.uploadNewFile
+);
+fileDataRouter.delete("/filedata/:id", fileDataController.deleteOneFileData);
+fileDataRouter.get("/filedata", fileDataController.listOrphanData);
 
-export default fileDataRouter
+export default fileDataRouter;

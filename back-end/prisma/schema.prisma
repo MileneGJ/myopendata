@@ -16,6 +16,7 @@ model Users {
   email String @unique
   password String
   files Files[]
+  filedata FileData[]
   users1 Friends[] @relation("users1")
   users2 Friends[] @relation("users2")
   createdAt DateTime @default(now())
@@ -40,6 +41,8 @@ model FileData {
   name String
   size Int
   url String @unique
+  users Users @relation(fields: [userId], references: [id])
+  userId Int
   files FilesFileData[]
   createdAt DateTime @default(now())
 }
