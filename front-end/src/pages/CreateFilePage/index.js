@@ -46,8 +46,8 @@ export default function CreateFilePage() {
       <p>
         Instructions: <br />
         - Prepare your data as a csv table (ideally with headers) <br />
-        - Specify the meaning of each row and its units in description <br />-
-        Keywords (at least one) must be separated by semi-colon ( ; ){" "}
+        - Specify the meaning of each column and its units in description <br />
+        - Keywords (at least one) must be separated by semi-colon ( ; ){" "}
       </p>
       <Form onSubmit={createFile}>
         <input
