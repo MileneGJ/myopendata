@@ -10,9 +10,10 @@ export async function uploadFile(file: IAWSFile, userId: number) {
   return updatedFile;
 }
 
-export async function updateLinksWithFile(urlArray: string[], fileId: number) {
-  for (let url of urlArray) {
-    const foundData = await verifyUrlExists(url);
+export async function updateUserLinksWithFile(userId: number, fileId: number) {
+  const urlArray = await fileDataRepository.findOrphansByUserId(userId);
+  for (let data of urlArray) {
+    const foundData = await verifyUrlExists(data.url);
     await filesFileDataService.updateLinks(foundData.id, fileId);
   }
 }

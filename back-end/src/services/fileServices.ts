@@ -20,7 +20,7 @@ export async function create(file: IFileBody, userId: number) {
     userId,
   });
   await keywordService.linkKeywordsToFile(file.keywords, newFile.id);
-  await fileDataService.updateLinksWithFile(file.csvlink, newFile.id);
+  await fileDataService.updateUserLinksWithFile(userId, newFile.id);
   return newFile;
 }
 
