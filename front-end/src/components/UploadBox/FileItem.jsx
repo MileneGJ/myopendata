@@ -4,7 +4,7 @@ import { MdLink, MdCheckCircle, MdError } from "react-icons/md";
 export default function FileItem({
   name,
   readableSize,
-  preview,
+  deleteFileItem,
   progress,
   error,
   uploaded,
@@ -16,7 +16,7 @@ export default function FileItem({
         <h3>{name}</h3>
         <span>
           <p>{readableSize}</p>
-          {url && <button>Excluir</button>}
+          {url && <h4 onClick={deleteFileItem}>Excluir</h4>}
         </span>
       </div>
       <div>

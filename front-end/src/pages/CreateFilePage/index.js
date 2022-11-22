@@ -32,6 +32,7 @@ export default function CreateFilePage() {
       return newK;
     });
     try {
+      console.log(newFile);
       await create(token, { ...newFile, keywords });
       setGoBack(true);
     } catch (error) {

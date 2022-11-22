@@ -32,11 +32,9 @@ const UploadUl = styled.ul`
       line-height: 22px;
       margin: 0;
     }
-    button {
-      border: none;
-      background-color: transparent;
+    h4 {
       margin: 0;
-      height: auto;
+      height: 100%;
       margin-left: 5px;
       font-size: 14px;
       color: #e57878;
@@ -44,6 +42,7 @@ const UploadUl = styled.ul`
     }
     span {
       display: flex;
+      align-items: center;
     }
   }
   & + li {
