@@ -67,7 +67,7 @@ export async function findByKeyword(keyword: string): Promise<IFileReturnDB[]> {
       name: "asc",
     },
   });
-  console.log(keywordOutput[0].filesKeywords?.map((f) => f.files));
+
   return keywordOutput[0].filesKeywords?.map((f) => f.files);
 }
 

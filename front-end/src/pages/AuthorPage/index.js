@@ -43,7 +43,7 @@ export default function AuthorPage() {
     <PageTemplate header={true} footer={true}>
       <h2>{authorName}'s activity</h2>
       {userData.id !== parseInt(authorId) && (
-        <button>Get in touch on OpenDataChat</button>
+        <button>OpenDataChat soon available</button>
       )}
       {fileList ? (
         fileList.length > 0 ? (
