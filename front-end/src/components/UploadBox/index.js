@@ -3,13 +3,35 @@ import { uniqueId } from "lodash";
 import { filesize } from "filesize";
 import UploadFile from "../../components/UploadBox/Upload";
 import UploadList from "../../components/UploadBox/UploadList";
-import { createFileData, deleteFileData } from "../../services/files";
+import {
+  createFileData,
+  deleteFileData,
+  getFileData,
+} from "../../services/files";
 import errorHandler from "../../utils/errorHandler";
 
 export default class UploadBox extends Component {
   state = {
     uploadedFiles: [],
   };
+
+  async componentDidMount() {
+    const token = localStorage.getItem("token");
+    try {
+      const response = await getFileData(token);
+      this.setState({
+        uploadedFiles: response.map((file) => ({
+          id: file.id,
+          name: file.name,
+          readableSize: filesize(file.size),
+          uploaded: true,
+          url: file.url,
+        })),
+      });
+    } catch (error) {
+      errorHandler(error);
+    }
+  }
 
   addFile = (newUploadedFiles) => {
     this.setState({

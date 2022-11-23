@@ -21,5 +21,5 @@ export async function deleteOneFileData(req: Request, res: Response) {
 export async function listOrphanData(req: Request, res: Response) {
   const { userId } = res.locals;
   const files = await fileDataService.getOrphansFromUser(userId);
-  res.sendStatus(200).send(files);
+  res.status(200).send(files);
 }

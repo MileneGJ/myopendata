@@ -4,13 +4,17 @@ const UserContext = createContext();
 export default UserContext;
 
 export function UserProvider({ children }) {
-  const [userData, setUserData] = useState({
-    name: "Maria",
-    id: 1,
-  });
+  const [userData, setUserData] = useState(null);
 
   useEffect(() => {
-    localStorage.setItem("user", userData);
+    if (!userData) {
+      const data = localStorage.getItem("user");
+      if (data) {
+        setUserData(data);
+      }
+    } else {
+      localStorage.setItem("user", userData);
+    }
   }, [userData]);
 
   return (

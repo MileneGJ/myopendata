@@ -34,10 +34,15 @@ export async function findOrphans() {
 
 export async function findOrphansByUserId(userId: number) {
   return await prisma.fileData.findMany({
-    where: { userId },
-    select: {
-      id: true,
-      url: true,
+    where: {
+      AND: [
+        { userId },
+        {
+          files: {
+            none: {},
+          },
+        },
+      ],
     },
   });
 }

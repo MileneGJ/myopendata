@@ -52,3 +52,9 @@ export async function deleteFileData(token, id) {
   const response = await api.delete(`/filedata/${id}`, config);
   return response.data;
 }
+
+export async function getFileData(token) {
+  const config = createConfig(token);
+  const response = await api.get(`/filedata`, config);
+  return response.data;
+}

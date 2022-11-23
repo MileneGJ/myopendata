@@ -6,6 +6,7 @@ const Container = styled.div`
   flex-direction: column;
   align-items: center;
   .fileDescription {
+    align-items: flex-start;
     h2,
     p {
       width: 100%;

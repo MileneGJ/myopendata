@@ -11,7 +11,6 @@ export default function CreateFilePage() {
   const navigate = useNavigate();
   const [newFile, setNewFile] = useState({
     title: "",
-    csvlink: [],
     description: "",
     keywords: "",
   });
@@ -32,12 +31,21 @@ export default function CreateFilePage() {
       return newK;
     });
     try {
-      console.log(newFile);
       await create(token, { ...newFile, keywords });
       setGoBack(true);
     } catch (error) {
       errorHandler(error);
     }
+  }
+
+  function onCloseModal() {
+    // setGoBack(false);
+    // setNewFile({
+    //   title: "",
+    //   description: "",
+    //   keywords: "",
+    // });
+    window.location.reload(false);
   }
 
   return (
@@ -65,7 +73,7 @@ export default function CreateFilePage() {
             setNewFile({ ...newFile, description: e.target.value })
           }
         />
-        <UploadBox newFile={newFile} setNewFile={setNewFile} />
+        <UploadBox />
         <input
           type="text"
           placeholder="Keywords"
@@ -78,7 +86,7 @@ export default function CreateFilePage() {
 
       <ModalForConfirmation
         modalIsOpen={goBackOpen}
-        closeModal={() => setGoBack(false)}
+        closeModal={onCloseModal}
         action={() => navigate("/home")}
         questionAnswers={[
           `"${newFile.title}" was successfully created. Add another file?`,

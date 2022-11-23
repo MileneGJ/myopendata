@@ -1,12 +1,15 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { getFileById } from "../../services/files";
+import { deleteFile, getFileById } from "../../services/files";
 import errorHandler from "../../utils/errorHandler";
 import PageTemplate from "../../components/PageTemplate";
+import { MdDelete } from "react-icons/md";
+import UserContext from "../../contexts/UserContext";
 
 export default function FilePage() {
   const [file, setFile] = useState(null);
   const { id } = useParams();
+  const { userData } = useContext(UserContext);
   const token = localStorage.getItem("token");
   const navigate = useNavigate();
 
@@ -21,11 +24,28 @@ export default function FilePage() {
     }
     getFileData();
   }, [token, id]);
+
+  async function deleteOneFile() {
+    try {
+      await deleteFile(token, file.id);
+      navigate("/home");
+    } catch (error) {
+      errorHandler(error);
+    }
+  }
+
   return (
     <PageTemplate header={true} footer={true} HaveClass="fileDescription">
       {file ? (
         <>
           <h2>{file.title}</h2>
+          {file?.authorId === userData.id && (
+            <MdDelete
+              style={{ cursor: "pointer" }}
+              onClick={deleteOneFile}
+              size={24}
+            />
+          )}
           <p>{file.description}</p>
           <p style={{ textAlign: "left" }}>
             {"Get data on: "}

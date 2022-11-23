@@ -13,7 +13,7 @@ export default function UserMenu() {
   const token = localStorage.getItem("token");
 
   function deleteSession() {
-    localStorage.removeItem("token");
+    localStorage.clear();
     setUserData({});
     navigate("/signin");
   }
@@ -34,9 +34,9 @@ export default function UserMenu() {
 
   return (
     <UserContainer onClick={showOptions} visible={appearOptions}>
-      <p>{userData.name}</p>
+      <p>{userData?.name}</p>
       <UserOptions>
-        <Link to={`/author/${userData.id}`}>My files</Link>
+        <Link to={`/author/${userData?.id}`}>My files</Link>
         <p onClick={deleteSession}>Logout</p>
         <p onClick={deleteAccount}>Delete account</p>
       </UserOptions>
