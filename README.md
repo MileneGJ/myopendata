@@ -1,6 +1,6 @@
 # My Open Data
 
-This is a authoral project, developed during Driven Bootcamp course and was bootstrapped with [Create React App](https://github.com/facebook/create-react-app). It is an platform for scientific data sharing, in which any user can register, look for data based on keyword, title or author and download it for free use. Users also have their own pages, allowing them to upload their own data or visit other users' page.
+This is an authoral project, developed during Driven Bootcamp course and was bootstrapped with [Create React App](https://github.com/facebook/create-react-app). It is an platform for scientific data sharing, in which any user can register, look for data based on keyword, title or author and download it for free use. Users also have their own pages, allowing them to upload their own data or visit other users' page.
 
 ## Features available for the user
 
