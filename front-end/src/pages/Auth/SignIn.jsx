@@ -6,6 +6,7 @@ import { signin } from "../../services/auth";
 import errorHandler from "../../utils/errorHandler";
 import { useContext } from "react";
 import UserContext from "../../contexts/UserContext";
+import { getUserData } from "../../services/users";
 
 export default function SignIn() {
   const { setUserData } = useContext(UserContext);
@@ -19,8 +20,9 @@ export default function SignIn() {
     e.preventDefault();
     try {
       const promise = await signin(authUser);
-      localStorage.setItem("token", promise.data.token);
-      setUserData(promise.data.user);
+      localStorage.setItem("token", promise.data);
+      const user = await getUserData(promise.data);
+      setUserData(user);
       navigate("/home");
     } catch (error) {
       errorHandler(error);
